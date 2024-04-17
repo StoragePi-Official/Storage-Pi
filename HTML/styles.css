@@ -107,14 +107,6 @@ body {
     backdrop-filter: blur(8px);
 }
 
-#fileExplorerContent {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Grid with minimum column width of 150px */
-    grid-gap: 10px; /* Gap between grid items */
-    max-height: 300px; /* Maximum height of file explorer content */
-    overflow-y: auto; /* Enable vertical scroll when content exceeds height */
-}
-
 /* Add separator styling */
 .separator {
     border-left: 1px solid #ccc; /* Vertical line */
