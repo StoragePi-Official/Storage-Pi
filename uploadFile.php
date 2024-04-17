@@ -23,6 +23,12 @@ if (isset($_FILES['file']) && !empty($filePath)) {
     // Directory where the file will be uploaded
     $uploadDir = "$currentDir/User/Files/$directory/";
 
+    // Check if directory is writable
+    if (!is_writable($uploadDir)) {
+        echo "Error: Upload directory is not writable.";
+        exit;
+    }
+
     // Create directory if it doesn't exist
     if (!file_exists($uploadDir)) {
         mkdir($uploadDir, 0777, true);
