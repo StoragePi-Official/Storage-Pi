@@ -107,6 +107,52 @@ body {
     backdrop-filter: blur(8px);
 }
 
+/* CSS Styles for File Explorer */
+#fileExplorerContent {
+    max-height: calc(100% - 60px); /* Adjust based on the available height */
+    overflow-y: auto; /* Enable vertical scrolling */
+    padding-right: 20px; /* Add space for scrollbar */
+}
+
+.array-content {
+    margin-bottom: 20px; /* Add space between sections */
+}
+
+.grid-layout {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); /* Adjust based on file name width */
+    grid-gap: 10px; /* Adjust gap between grid items */
+}
+
+.grid-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border: 1px solid #ccc; /* Add border to grid items */
+    padding: 10px;
+}
+
+.file-preview {
+    max-width: 100px;
+    max-height: 100px;
+    margin-bottom: 5px; /* Add space between preview and file name */
+}
+
+.file-name {
+    max-width: 100%; /* Allow file names to wrap */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Display ellipsis for long file names */
+}
+
+/* Style for folder list items */
+.listItem {
+    padding: 5px 0;
+    cursor: pointer;
+}
+
+
 /* Add separator styling */
 .separator {
     border-left: 1px solid #ccc; /* Vertical line */
