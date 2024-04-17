@@ -22,11 +22,25 @@ if (isset($_FILES['file']) && !empty($filePath)) {
     // Include the file name in the upload directory path
     $targetFile = $uploadDir . $fileName;
 
-    // Upload the file
-    if (move_uploaded_file($file['tmp_name'], $targetFile)) {
-        echo "File uploaded successfully.";
-    } else {
-        echo "Error uploading file: " . $targetFile . $_FILES["file"]["error"];
+    // Maximum number of upload attempts
+    $maxAttempts = 3;
+    $attempt = 1;
+
+    // Upload the file with retries
+    while ($attempt <= $maxAttempts) {
+        if (move_uploaded_file($file['tmp_name'], $targetFile)) {
+            echo "File uploaded successfully.";
+            break; // Exit the loop if upload is successful
+        } else {
+            echo "Error uploading file. Attempt $attempt of $maxAttempts. Retrying...<br>";
+            $attempt++;
+            usleep(1000000); // Wait for 1 second before retrying (1,000,000 microseconds = 1 second)
+        }
+    }
+
+    // If all attempts fail
+    if ($attempt > $maxAttempts) {
+        echo "Failed to upload file after $maxAttempts attempts.";
     }
 } else {
     echo "Invalid file path.";
