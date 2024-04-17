@@ -12,13 +12,11 @@ print_action_icon() {
 
 # Function to print a separator line
 print_separator_line() {
-    cols=$(tput cols)
-    sep=""
-    for ((i=1; i<=cols; i++)); do
-        sep="${sep}-"
-    done
-    printf -- "$sep\n"
+    printf -- "---------------------------------\n"
 }
+
+# Get the IP address of the machine
+IP=$(hostname -I | cut -d' ' -f1)
 
 # Check if Apache2 is installed
 if ! command -v apache2 &> /dev/null
@@ -27,7 +25,7 @@ then
     echo -n "$(print_action_icon '+') "
     echo "Installing Apache2..."
     sudo apt-get update
-    sudo apt-get install -y apache2
+    sudo apt-get install -y apache2 > /dev/null 2>&1
 else
     print_separator_line
     echo -n "$(print_green_checkmark) "
@@ -41,7 +39,7 @@ then
     echo -n "$(print_action_icon '+') "
     echo "Installing PHP..."
     sudo apt-get update
-    sudo apt-get install -y php
+    sudo apt-get install -y php > /dev/null 2>&1
 else
     print_separator_line
     echo -n "$(print_green_checkmark) "
@@ -73,18 +71,16 @@ then
     print_separator_line
     echo -n "$(print_action_icon '+') "
     echo "Cloning Storage-Pi repository..."
-    git clone https://github.com/StoragePi-Official/Storage-Pi.git .
+    git clone https://github.com/StoragePi-Official/Storage-Pi.git . > /dev/null 2>&1
 else
     print_separator_line
     echo -n "$(print_green_checkmark) "
     echo "Storage-Pi repository is already cloned."
 fi
 
-# Display current directory
-echo "Current directory: $(pwd)"
-
-# Echo the URL to access the cloned repository
-echo "You can access the cloned repository at: http://localhost/Storage-Pi/HTML/index.html"
+# Echo a message indicating successful installation with an emoji
+echo -e "\n\e[32m✅ StoragePi successfully installed.\e[0m"
+echo -e "\e[33mℹ️ You can access the dashboard at http://$IP/Storage-Pi/HTML/\e[0m"
 
 # Set permissions to write/read for all users in /var directory
 sudo chmod -R 777 /var
