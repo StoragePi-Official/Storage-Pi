@@ -73,22 +73,13 @@ function populateFileExplorer(data) {
         const arrayContent = document.createElement('div');
         arrayContent.classList.add('array-content'); // Add class for styling
         arrayContent.style.display = 'none'; // Hide by default
-
-        let rowContainer = null; // Initialize row container
+        arrayContent.style.display = 'grid'; // Set display to grid
+        arrayContent.style.gridTemplateColumns = 'repeat(3, 1fr)'; // Set grid columns (3 columns)
 
         value.forEach(item => {
-            if (!rowContainer) {
-                // Create a new row container if it's the first item or if the previous row is full
-                rowContainer = document.createElement('div');
-                rowContainer.classList.add('row-container'); // Add class for styling
-                arrayContent.appendChild(rowContainer); // Append row container to array content
-            }
-
-            // Create the file container
-            const fileContainer = document.createElement('div');
-            fileContainer.className = "file-container"; // Add class for styling
-            fileContainer.style.maxWidth = '150px'; // Set max width for file container
-            fileContainer.style.wordWrap = 'break-word'; // Allow text to wrap
+            const listItem = document.createElement('div');
+            listItem.className = "listItem";
+            listItem.style.maxWidth = '150px'; // Set max width for file container
 
             // Check if the file is an image and add a preview
             if (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i.test(item)) {
@@ -97,8 +88,13 @@ function populateFileExplorer(data) {
                 imgPreview.classList.add('file-preview'); // Add class for styling
                 imgPreview.style.maxWidth = '100px'; // Set max width
                 imgPreview.style.maxHeight = '100px'; // Set max height
-                fileContainer.appendChild(imgPreview);
+                listItem.appendChild(imgPreview);
             }
+
+            // Create a container for the file name
+            const fileNameContainer = document.createElement('div');
+            fileNameContainer.style.maxWidth = '120px'; // Set max width for file name container
+            fileNameContainer.style.wordWrap = 'break-word'; // Allow text to wrap
 
             // Create the text element for the file name
             const fileName = document.createElement('span');
@@ -108,22 +104,16 @@ function populateFileExplorer(data) {
                 fileName.textContent = item;
             }
             fileName.classList.add('file-name'); // Add class for styling
-            fileContainer.appendChild(fileName);
+            fileNameContainer.appendChild(fileName);
+            listItem.appendChild(fileNameContainer);
 
             // Add click event listener to each file
-            fileContainer.addEventListener('click', function() {
+            listItem.addEventListener('click', function() {
                 const filePath = `../User/Files/${key}/${item}`;
                 openFile(filePath);
             });
 
-            // Append file container to row container
-            rowContainer.appendChild(fileContainer);
-
-            // Check if the row is full
-            if (rowContainer.offsetWidth + fileContainer.offsetWidth >= arrayContent.offsetWidth) {
-                // If the next file will overflow the row, create a new row container
-                rowContainer = null;
-            }
+            arrayContent.appendChild(listItem);
         });
         fileExplorerContent.appendChild(arrayContent);
 
@@ -167,7 +157,6 @@ function populateFileExplorer(data) {
     
     fileExplorerContent.appendChild(uploadButton);
 }
-
 
 // Function to handle file upload
 function handleUpload() {
