@@ -29,15 +29,10 @@ if (isset($_FILES['file']) && !empty($filePath)) {
         exit;
     }
 
-    // Create directory if it doesn't exist
-    if (!file_exists($uploadDir)) {
-        mkdir($uploadDir, 0777, true);
-    }
-
     // Include the file name in the upload directory path
     $targetFile = $uploadDir . $fileName;
 
-    // Upload the file
+    // Upload the file directly to the target directory
     if (move_uploaded_file($file['tmp_name'], $targetFile)) {
         // Check if file uploaded successfully
         if (file_exists($targetFile)) {
@@ -51,28 +46,5 @@ if (isset($_FILES['file']) && !empty($filePath)) {
     }
 } else {
     echo "Invalid file path.";
-}
-
-// Find and modify PHP.ini as root
-$phpIniPath = '/etc/php/';
-$phpIniFiles = glob($phpIniPath . 'php.ini', GLOB_BRACE);
-
-if (!empty($phpIniFiles)) {
-    foreach ($phpIniFiles as $phpIniFile) {
-        $output = shell_exec("sudo chmod 777 $phpIniFile");
-        if (strpos($output, 'Operation not permitted') !== false) {
-            echo "Error: Unable to modify PHP.ini. Please ensure you have the necessary permissions.";
-            exit;
-        } else {
-            $configContent = file_get_contents($phpIniFile);
-            // Modify the PHP settings in $configContent as needed
-            // Save the modified content back to the PHP.ini file
-            // Example modification:
-            $configContent = str_replace('upload_max_filesize = 2M', 'upload_max_filesize = 100M', $configContent);
-             file_put_contents($phpIniFile, $configContent);
-        }
-    }
-} else {
-    echo "Error: PHP.ini file not found in $phpIniPath.";
 }
 ?>
