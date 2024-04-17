@@ -25,7 +25,7 @@ if (isset($_FILES['file']) && !empty($filePath)) {
 
     // Check if directory is writable
     if (!is_writable($uploadDir)) {
-        echo "Error: Upload directory is not writable.";
+        echo "Error: Upload directory is not writable. Please check directory permissions or ownership.";
         exit;
     }
 
