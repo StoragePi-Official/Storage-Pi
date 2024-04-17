@@ -74,9 +74,9 @@ function populateFileExplorer(data) {
         arrayContent.classList.add('array-content'); // Add class for styling
         arrayContent.style.display = 'none'; // Hide by default
 
-        let currentLine = 0; // Track the current line
-        let currentLineWidth = 0; // Track the width of the current line
-        let lineHeight = 0; // Track the maximum height of the current line
+        // Calculate available width for file containers
+        const availableWidth = fileExplorerContent.offsetWidth;
+        let currentLineWidth = 0;
 
         value.forEach(item => {
             const listItem = document.createElement('div');
@@ -115,25 +115,17 @@ function populateFileExplorer(data) {
                 openFile(filePath);
             });
 
-            // Check if the current line can accommodate the new file container
-            if (currentLineWidth + listItem.offsetWidth <= fileExplorerContent.offsetWidth) {
-                listItem.style.position = 'relative';
-                listItem.style.left = currentLineWidth + 'px';
-                listItem.style.top = currentLine * lineHeight + 'px';
-                currentLineWidth += listItem.offsetWidth; // Update the width of the current line
-                lineHeight = Math.max(lineHeight, listItem.offsetHeight); // Update the maximum height of the current line
-            } else {
-                currentLine++; // Move to the next line
-                currentLineWidth = 0; // Reset the width of the current line
-                lineHeight = 0; // Reset the maximum height of the current line
-                listItem.style.position = 'relative';
-                listItem.style.left = '0px';
-                listItem.style.top = currentLine * lineHeight + 'px';
-                currentLineWidth += listItem.offsetWidth; // Update the width of the current line
-                lineHeight = Math.max(lineHeight, listItem.offsetHeight); // Update the maximum height of the current line
-            }
-
             arrayContent.appendChild(listItem);
+
+            // Calculate the width of the current line
+            currentLineWidth += listItem.offsetWidth;
+
+            // Check if the current line exceeds the available width
+            if (currentLineWidth > availableWidth) {
+                // Start a new line
+                listItem.style.clear = 'left'; // Clear float for new line
+                currentLineWidth = listItem.offsetWidth; // Reset the current line width
+            }
         });
         fileExplorerContent.appendChild(arrayContent);
 
