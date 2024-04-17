@@ -16,19 +16,25 @@ if (isset($_FILES['file']) && !empty($filePath)) {
 
     // Create directory if it doesn't exist
     if (!file_exists($uploadDir)) {
-        mkdir($uploadDir, 0777, true);
+        if (!mkdir($uploadDir, 0777, true)) {
+            echo "Error: Failed to create directory.";
+            exit;
+        }
     }
 
     // Include the file name in the upload directory path
     $targetFile = $uploadDir . $fileName;
 
-    // Upload the file as root
+    // Upload the file
     if (move_uploaded_file($file['tmp_name'], $targetFile)) {
         // Change ownership to root
-        chown($targetFile, 'root');
-        echo "File uploaded successfully.";
+        if (!chown($targetFile, 'root')) {
+            echo "Error: Failed to change ownership to root.";
+        } else {
+            echo "File uploaded successfully.";
+        }
     } else {
-        echo "Error uploading file: " . $targetFile . $_FILES["file"]["error"];
+        echo "Error uploading file: " . $_FILES["file"]["error"];
     }
 } else {
     echo "Invalid file path.";
