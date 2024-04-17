@@ -284,3 +284,28 @@ body {
         transform: translate(-50%, -50%) scale(1);
     }
 }
+
+/* Add this CSS to your existing styles.css file */
+.file-grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Adjust the minimum width and the number of files per line */
+    gap: 10px; /* Adjust the gap between files */
+    justify-content: center; /* Center the files horizontally */
+}
+
+.listItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.file-preview {
+    max-width: 100px;
+    max-height: 100px;
+}
+
+.file-name {
+    max-width: 120px;
+    word-wrap: break-word;
+}
