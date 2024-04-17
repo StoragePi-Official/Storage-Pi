@@ -22,14 +22,13 @@ if (isset($_FILES['file']) && !empty($filePath)) {
     // Include the file name in the upload directory path
     $targetFile = $uploadDir . $fileName;
 
-    // Command to move the uploaded file with sudo privileges
-    $moveCommand = "sudo mv {$file['tmp_name']} $targetFile";
-
-    // Upload the file using sudo
-    if (shell_exec($moveCommand) !== null) {
+    // Upload the file as root
+    if (move_uploaded_file($file['tmp_name'], $targetFile)) {
+        // Change ownership to root
+        chown($targetFile, 'root');
         echo "File uploaded successfully.";
     } else {
-        echo "Error uploading file.";
+        echo "Error uploading file: " . $targetFile . $_FILES["file"]["error"];
     }
 } else {
     echo "Invalid file path.";
