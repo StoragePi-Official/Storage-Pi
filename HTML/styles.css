@@ -216,6 +216,7 @@ body {
     position: absolute;
     align-items: center;
     justify-content: center;
+    border: 1px solid white;
     /* Add other necessary styles */
 }
 
