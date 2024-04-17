@@ -23,22 +23,15 @@ if (isset($_FILES['file']) && !empty($filePath)) {
     // Directory where the file will be uploaded
     $uploadDir = "$currentDir/User/Files/$directory/";
 
-    // Check if directory exists, if not create it
-    if (!file_exists($uploadDir)) {
-        mkdir($uploadDir, 0777, true);
-    }
-
     // Check if directory is writable
     if (!is_writable($uploadDir)) {
-        // Attempt to change directory permissions
-        if (!chmod($uploadDir, 0777)) {
-            // Retry as root
-            $output = shell_exec("sudo chmod 777 $uploadDir 2>&1");
-            if (strpos($output, 'Operation not permitted') !== false) {
-                echo "Error: Unable to make directory writable. Please contact the server administrator.";
-                exit;
-            }
-        }
+        echo "Error: Upload directory is not writable. Please check directory permissions or ownership.";
+        exit;
+    }
+
+    // Create directory if it doesn't exist
+    if (!file_exists($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
     }
 
     // Include the file name in the upload directory path
@@ -58,5 +51,28 @@ if (isset($_FILES['file']) && !empty($filePath)) {
     }
 } else {
     echo "Invalid file path.";
+}
+
+// Find and modify PHP.ini as root
+$phpIniPath = '/etc/php/';
+$phpIniFiles = glob($phpIniPath . 'php.ini', GLOB_BRACE);
+
+if (!empty($phpIniFiles)) {
+    foreach ($phpIniFiles as $phpIniFile) {
+        $output = shell_exec("sudo chmod 777 $phpIniFile");
+        if (strpos($output, 'Operation not permitted') !== false) {
+            echo "Error: Unable to modify PHP.ini. Please ensure you have the necessary permissions.";
+            exit;
+        } else {
+            $configContent = file_get_contents($phpIniFile);
+            // Modify the PHP settings in $configContent as needed
+            // Save the modified content back to the PHP.ini file
+            // Example modification:
+            $configContent = str_replace('upload_max_filesize = 2M', 'upload_max_filesize = 100M', $configContent);
+             file_put_contents($phpIniFile, $configContent);
+        }
+    }
+} else {
+    echo "Error: PHP.ini file not found in $phpIniPath.";
 }
 ?>
