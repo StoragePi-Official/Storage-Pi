@@ -23,16 +23,15 @@ if (isset($_FILES['file']) && !empty($filePath)) {
     // Directory where the file will be uploaded
     $uploadDir = "$currentDir/User/Files/$directory/";
 
-    // Check if directory is writable
-    if (!is_writable($uploadDir)) {
-        echo "Error: Upload directory is not writable. Please check directory permissions or ownership.";
-        exit;
+    // Create directory if it doesn't exist
+    if (!file_exists($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
     }
 
     // Include the file name in the upload directory path
     $targetFile = $uploadDir . $fileName;
 
-    // Upload the file directly to the target directory
+    // Upload the file
     if (move_uploaded_file($file['tmp_name'], $targetFile)) {
         // Check if file uploaded successfully
         if (file_exists($targetFile)) {
