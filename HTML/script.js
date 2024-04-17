@@ -53,39 +53,68 @@ function populateFileExplorer(data) {
         // Create a container for the array items
         const arrayContent = document.createElement('div');
         arrayContent.classList.add('array-content'); // Add class for styling
+        arrayContent.style.display = 'none'; // Hide by default
+
+        // Check if the section contains files or folders
+        const containsFiles = value.some(item => /\.(gif|jpe?g|tiff?|png|webp|bmp)$/i.test(item));
+
         value.forEach(item => {
             const listItem = document.createElement('div');
             listItem.className = "listItem";
 
-            // Check if the file is an image and add a preview
-            if (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i.test(item)) {
-                const imgPreview = document.createElement('img');
-                imgPreview.src = `../User/Files/${key}/${item}`;
-                imgPreview.classList.add('file-preview'); // Add class for styling
-                listItem.appendChild(imgPreview);
+            if (containsFiles) {
+                // Check if the file is an image and add a preview
+                if (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i.test(item)) {
+                    const imgPreview = document.createElement('img');
+                    imgPreview.src = `../User/Files/${key}/${item}`;
+                    imgPreview.classList.add('file-preview'); // Add class for styling
+                    listItem.appendChild(imgPreview);
+                }
+
+                // Create the text element for the file name
+                const fileName = document.createElement('span');
+                fileName.textContent = item;
+                fileName.classList.add('file-name'); // Add class for styling
+                listItem.appendChild(fileName);
+
+                // Add click event listener to each file
+                listItem.addEventListener('click', function() {
+                    const filePath = `../User/Files/${key}/${item}`;
+                    openFile(filePath);
+                });
+            } else {
+                // Create folder element
+                const folder = document.createElement('div');
+                folder.textContent = item;
+                folder.className = "folder";
+                // Add click event listener to each folder
+                folder.addEventListener('click', function() {
+                    // Implement folder click functionality here
+                });
+                listItem.appendChild(folder);
             }
-
-            // Create a container for the file name
-            const fileNameContainer = document.createElement('div');
-            fileNameContainer.style.maxWidth = '120px'; // Set max width for file name
-            fileNameContainer.style.wordWrap = 'break-word'; // Allow text to wrap
-
-            // Create the text element for the file name
-            const fileName = document.createElement('span');
-            fileName.textContent = item;
-            fileName.classList.add('file-name'); // Add class for styling
-            fileNameContainer.appendChild(fileName);
-            listItem.appendChild(fileNameContainer);
-
-            // Add click event listener to each file
-            listItem.addEventListener('click', function() {
-                const filePath = `../User/Files/${key}/${item}`;
-                openFile(filePath);
-            });
 
             arrayContent.appendChild(listItem);
         });
+
         fileExplorerContent.appendChild(arrayContent);
+
+        // Add a divider line between folders and files
+        const divider = document.createElement('hr');
+        fileExplorerContent.appendChild(divider);
+
+        // Add click event listener to section title
+        sectionTitle.addEventListener('click', function() {
+            // Close all other folders
+            const allArrayContents = document.querySelectorAll('.array-content');
+            allArrayContents.forEach(content => {
+                if (content !== arrayContent) {
+                    content.style.display = 'none';
+                }
+            });
+            // Toggle display of array content
+            arrayContent.style.display = arrayContent.style.display === 'none' ? 'block' : 'none';
+        });
     });
 
     // Add button for uploading files
