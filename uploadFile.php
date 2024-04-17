@@ -23,15 +23,22 @@ if (isset($_FILES['file']) && !empty($filePath)) {
     // Directory where the file will be uploaded
     $uploadDir = "$currentDir/User/Files/$directory/";
 
-    // Check if directory is writable
-    if (!is_writable($uploadDir)) {
-        echo "Error: Upload directory is not writable. Please check directory permissions or ownership.";
-        exit;
-    }
-
-    // Create directory if it doesn't exist
+    // Check if directory exists, if not create it
     if (!file_exists($uploadDir)) {
         mkdir($uploadDir, 0777, true);
+    }
+
+    // Check if directory is writable
+    if (!is_writable($uploadDir)) {
+        // Attempt to change directory permissions
+        if (!chmod($uploadDir, 0777)) {
+            // Retry as root
+            $output = shell_exec("sudo chmod 777 $uploadDir 2>&1");
+            if (strpos($output, 'Operation not permitted') !== false) {
+                echo "Error: Unable to make directory writable. Please contact the server administrator.";
+                exit;
+            }
+        }
     }
 
     // Include the file name in the upload directory path
