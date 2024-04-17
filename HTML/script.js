@@ -76,6 +76,7 @@ function populateFileExplorer(data) {
         value.forEach(item => {
             const listItem = document.createElement('div');
             listItem.className = "listItem";
+            listItem.style.maxWidth = '150px'; // Set max width for file container
 
             // Check if the file is an image and add a preview
             if (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i.test(item)) {
