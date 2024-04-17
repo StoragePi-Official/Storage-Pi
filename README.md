@@ -1,4 +1,4 @@
-# My Awesome Project
+# Storage Pi
 
 <p align="center">
   <img src="./Resources/Icons/StoragePi.png" alt="Project Icon" width="300" height="300">
