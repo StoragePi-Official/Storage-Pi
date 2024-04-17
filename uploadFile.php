@@ -1,16 +1,18 @@
 <?php
+// Get the current directory of the script
+$currentDir = dirname(__FILE__);
+
 // Remove "../" from file path to prevent directory traversal
 $filePath = preg_replace('/\.\.\//', '', $_POST['filePath']);
 $fileName = basename($_FILES["file"]["name"]);
-$uploadDir = "./User/Files/$directory/$fileName";
+$directory = $_POST['directory'];
 
 // Check if file path is provided
 if (isset($_FILES['file']) && !empty($filePath)) {
     $file = $_FILES['file'];
-    $directory = $_POST['directory'];
 
     // Directory where the file will be uploaded
-    $uploadDir = "./User/Files/$directory/";
+    $uploadDir = "$currentDir/User/Files/$directory/";
 
     // Create directory if it doesn't exist
     if (!file_exists($uploadDir)) {
