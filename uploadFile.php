@@ -20,7 +20,7 @@ if (isset($_FILES['file']) && !empty($filePath)) {
     }
 
     // Include the file name in the upload directory path
-    $targetFile = $uploadDir . $file['name'];
+    $targetFile = $uploadDir . $fileName;
 
     // Upload the file
     if (move_uploaded_file($file['tmp_name'], $targetFile)) {
