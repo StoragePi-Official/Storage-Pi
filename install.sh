@@ -3,21 +3,23 @@
 # Check if Apache2 is installed
 if ! command -v apache2 &> /dev/null
 then
-    echo "Apache2 is not installed. Installing..."
+    echo "Installing Apache2"
+    echo "\n"
     sudo apt-get update
     sudo apt-get install -y apache2
 else
-    echo "Apache2 is already installed."
+    echo ""
 fi
 
 # Check if PHP is installed
 if ! command -v php &> /dev/null
 then
-    echo "PHP is not installed. Installing..."
+    echo "Installing PHP"
+    echo "\n"
     sudo apt-get update
     sudo apt-get install -y php
 else
-    echo "PHP is already installed."
+    echo ""
 fi
 
 # Navigate to /var/www/html
@@ -26,10 +28,11 @@ cd /var/www/html
 # Check if Storage-Pi directory exists, if not create it
 if [ ! -d "Storage-Pi" ]
 then
-    echo "Creating Storage-Pi directory..."
+    echo "Creating files"
+    echo "\n"
     mkdir Storage-Pi
 else
-    echo "Storage-Pi directory already exists."
+    echo ""
 fi
 
 # Navigate into the Storage-Pi directory
@@ -38,10 +41,11 @@ cd Storage-Pi
 # Clone the repository if it's not already cloned
 if [ ! -d ".git" ]
 then
-    echo "Cloning Storage-Pi repository..."
+    echo "Cloning Storage-Pi repository"
+    echo "\n"
     git clone https://github.com/StoragePi-Official/Storage-Pi.git .
 else
-    echo "Storage-Pi repository is already cloned."
+    echo ""
 fi
 
 # Display current directory
