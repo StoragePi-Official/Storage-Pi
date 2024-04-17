@@ -55,47 +55,60 @@ function populateFileExplorer(data) {
         arrayContent.classList.add('array-content'); // Add class for styling
         arrayContent.style.display = 'none'; // Hide by default
 
-        // Check if the section contains files or folders
-        const containsFiles = value.some(item => /\.(gif|jpe?g|tiff?|png|webp|bmp)$/i.test(item));
+        if (key === 'Folders') {
+            // Folders are displayed in a list format
+            value.forEach(item => {
+                const listItem = document.createElement('div');
+                listItem.textContent = item;
+                listItem.className = "listItem";
 
-        value.forEach(item => {
-            const listItem = document.createElement('div');
-            listItem.className = "listItem";
+                // Add click event listener to each folder
+                listItem.addEventListener('click', function() {
+                    const folderPath = `../User/Files/${key}/${item}`;
+                    openFolder(folderPath);
+                });
 
-            if (containsFiles) {
+                arrayContent.appendChild(listItem);
+            });
+        } else {
+            // Files are displayed in a grid format with previews
+            arrayContent.classList.add('grid-layout');
+
+            value.forEach(item => {
+                const gridItem = document.createElement('div');
+                gridItem.className = 'grid-item';
+
                 // Check if the file is an image and add a preview
                 if (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i.test(item)) {
                     const imgPreview = document.createElement('img');
                     imgPreview.src = `../User/Files/${key}/${item}`;
                     imgPreview.classList.add('file-preview'); // Add class for styling
-                    listItem.appendChild(imgPreview);
+                    imgPreview.style.maxWidth = '100px'; // Set max width
+                    imgPreview.style.maxHeight = '100px'; // Set max height
+                    gridItem.appendChild(imgPreview);
                 }
+
+                // Create a container for the file name
+                const fileNameContainer = document.createElement('div');
+                fileNameContainer.style.maxWidth = '120px'; // Set max width for file name
+                fileNameContainer.style.wordWrap = 'break-word'; // Allow text to wrap
 
                 // Create the text element for the file name
                 const fileName = document.createElement('span');
                 fileName.textContent = item;
                 fileName.classList.add('file-name'); // Add class for styling
-                listItem.appendChild(fileName);
+                fileNameContainer.appendChild(fileName);
+                gridItem.appendChild(fileNameContainer);
 
                 // Add click event listener to each file
-                listItem.addEventListener('click', function() {
+                gridItem.addEventListener('click', function() {
                     const filePath = `../User/Files/${key}/${item}`;
                     openFile(filePath);
                 });
-            } else {
-                // Create folder element
-                const folder = document.createElement('div');
-                folder.textContent = item;
-                folder.className = "folder";
-                // Add click event listener to each folder
-                folder.addEventListener('click', function() {
-                    // Implement folder click functionality here
-                });
-                listItem.appendChild(folder);
-            }
 
-            arrayContent.appendChild(listItem);
-        });
+                arrayContent.appendChild(gridItem);
+            });
+        }
 
         fileExplorerContent.appendChild(arrayContent);
 
