@@ -284,3 +284,31 @@ body {
         transform: translate(-50%, -50%) scale(1);
     }
 }
+
+/* styles.css */
+.file-explorer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+}
+
+.array-content {
+    grid-column: span 1;
+}
+
+.listItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+}
+
+.file-preview {
+    max-width: 100px;
+    max-height: 100px;
+}
+
+.file-name-container {
+    max-width: 120px;
+    word-wrap: break-word;
+}
