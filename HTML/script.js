@@ -82,6 +82,15 @@ function populateFileExplorer(data) {
                 const filePath = `../User/Files/${key}/${item}`;
                 openFile(filePath);
             });
+
+            // Check if the file is an image and add a preview
+            if (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i.test(item)) {
+                const imgPreview = document.createElement('img');
+                imgPreview.src = `../User/Files/${key}/${item}`;
+                imgPreview.classList.add('file-preview'); // Add class for styling
+                listItem.appendChild(imgPreview);
+            }
+
             arrayContent.appendChild(listItem);
         });
         fileExplorerContent.appendChild(arrayContent);
@@ -126,7 +135,6 @@ function populateFileExplorer(data) {
     
     fileExplorerContent.appendChild(uploadButton);
 }
-
 // Function to handle file upload
 function handleUpload() {
     // Open file dialog to choose a file
