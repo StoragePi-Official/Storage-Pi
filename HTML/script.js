@@ -73,6 +73,11 @@ function populateFileExplorer(data) {
         const arrayContent = document.createElement('div');
         arrayContent.classList.add('array-content'); // Add class for styling
         arrayContent.style.display = 'none'; // Hide by default
+
+        // Create a grid container for the files
+        const gridContainer = document.createElement('div');
+        gridContainer.classList.add('file-grid-container');
+
         value.forEach(item => {
             const listItem = document.createElement('div');
             listItem.className = "listItem";
@@ -110,8 +115,10 @@ function populateFileExplorer(data) {
                 openFile(filePath);
             });
 
-            arrayContent.appendChild(listItem);
+            gridContainer.appendChild(listItem);
         });
+
+        arrayContent.appendChild(gridContainer);
         fileExplorerContent.appendChild(arrayContent);
 
         // Add a divider line between folders and files
