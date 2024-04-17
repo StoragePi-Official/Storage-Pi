@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desktop UI</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="desktop">
+        <img src="../Resources/Icons/file-explorer.png" alt="File Explorer Icon" class="desktop-icon">
+        <img src="../Resources/Icons/controlPanel.png" alt="Control Panel Icon" id="controlPanelIcon" class="desktop-icon">
+        <div class="topbar">
+            <button class="menu-button" id="menuButton">
+                <img src="../Resources/Icons/StoragePi.png" alt="Menu Icon">
+            </button>
+            <div class="clock" id="clock"></div>
+        </div>
+        <!-- Popup container -->
+        <div id="popup-container"></div>
+
+        <!-- Control Panel Popup -->
+        <div id="controlPanel" class="popup">
+            <div class="popup-content">
+                <!-- Add your control panel content here -->
+                <h2>Control Panel</h2>
+                <div class="category-container">
+                    <div class="category">
+                        <img src="../Resources/Icons/StoragePi.png" alt="Category 1 Icon">
+                        <span class="system-text">System</span>
+                    </div>
+                    <div class="category" id="management">
+                        <img src="../Resources/Icons/management.png" alt="Category 2 Icon">
+                        <span class="management-text">Management</span>
+                    </div>
+                    <div class="category" id="storage">
+                        <img src="../Resources/Icons/storage.png" alt="Category 3 Icon">
+                        <span class="storage-text">Storage</span>
+                    </div>
+                </div>
+                <button id="closeControlPanel" class="close-button">
+                    <img src="../Resources/Icons/close.png" alt="Close Icon" id="closeControlPanelImg">
+                </button>
+            </div>
+        </div>
+
+        <!-- File Explorer Window -->
+        <div id="fileExplorer" class="file-explorer">
+            <div id="fileExplorerContent" class="file-explorer-content">
+                <!-- Folders -->
+                <div class="folder">Folder 1</div>
+                <div class="folder">Folder 2</div>
+                <!-- Files -->
+                <hr> <!-- Line separator -->
+                <div class="file">File 1.txt</div>
+                <div class="file">File 2.jpg</div>
+                <div class="file">File 3.pdf</div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="script.js"></script>
+    <script src="./Server/sync.js"></script> <!-- Include the socket.js file -->
+</body>
+</html>
