@@ -89,12 +89,16 @@ function populateFileExplorer(data) {
 
             // Create a container for the file name
             const fileNameContainer = document.createElement('div');
-            fileNameContainer.style.maxWidth = '120px'; // Set max width for file name
+            fileNameContainer.style.maxWidth = '120px'; // Set max width for file name container
             fileNameContainer.style.wordWrap = 'break-word'; // Allow text to wrap
 
             // Create the text element for the file name
             const fileName = document.createElement('span');
-            fileName.textContent = item;
+            if (item.length > 40) {
+                fileName.textContent = item.slice(0, 37) + '...'; // Truncate file name if it exceeds 40 characters
+            } else {
+                fileName.textContent = item;
+            }
             fileName.classList.add('file-name'); // Add class for styling
             fileNameContainer.appendChild(fileName);
             listItem.appendChild(fileNameContainer);
