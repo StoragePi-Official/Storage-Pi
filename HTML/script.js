@@ -53,8 +53,6 @@ function populateFileExplorer(data) {
         // Create a container for the array items
         const arrayContent = document.createElement('div');
         arrayContent.classList.add('array-content'); // Add class for styling
-        arrayContent.style.display = 'none'; // Hide by default
-        arrayContent.classList.add('file-explorer-content'); // Add class for grid layout
         value.forEach(item => {
             const listItem = document.createElement('div');
             listItem.className = "listItem";
@@ -67,10 +65,15 @@ function populateFileExplorer(data) {
                 listItem.appendChild(imgPreview);
             }
 
-            // Create the text element for the file name
+            // Create a container for the file name
             const fileNameContainer = document.createElement('div');
-            fileNameContainer.classList.add('file-name'); // Add class for styling
-            fileNameContainer.textContent = item;
+            fileNameContainer.classList.add('file-name-container'); // Add class for styling
+
+            // Create the text element for the file name
+            const fileName = document.createElement('span');
+            fileName.textContent = item;
+            fileName.classList.add('file-name'); // Add class for styling
+            fileNameContainer.appendChild(fileName);
             listItem.appendChild(fileNameContainer);
 
             // Add click event listener to each file
@@ -82,23 +85,6 @@ function populateFileExplorer(data) {
             arrayContent.appendChild(listItem);
         });
         fileExplorerContent.appendChild(arrayContent);
-
-        // Add a divider line between folders and files
-        const divider = document.createElement('hr');
-        fileExplorerContent.appendChild(divider);
-
-        // Add click event listener to section title
-        sectionTitle.addEventListener('click', function() {
-            // Close all other folders
-            const allArrayContents = document.querySelectorAll('.array-content');
-            allArrayContents.forEach(content => {
-                if (content !== arrayContent) {
-                    content.style.display = 'none';
-                }
-            });
-            // Toggle display of array content
-            arrayContent.style.display = arrayContent.style.display === 'none' ? 'block' : 'none';
-        });
     });
 
     // Add button for uploading files
@@ -123,6 +109,7 @@ function populateFileExplorer(data) {
     
     fileExplorerContent.appendChild(uploadButton);
 }
+
 
 // Function to handle file upload
 function handleUpload() {
