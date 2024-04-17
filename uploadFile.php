@@ -26,7 +26,7 @@ if (isset($_FILES['file']) && !empty($filePath)) {
     if (move_uploaded_file($file['tmp_name'], $targetFile)) {
         echo "File uploaded successfully.";
     } else {
-        echo "Error uploading file: " . $uploadDir . $_FILES["file"]["error"];
+        echo "Error uploading file: " . $targetFile . $_FILES["file"]["error"];
     }
 } else {
     echo "Invalid file path.";
