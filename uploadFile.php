@@ -22,25 +22,14 @@ if (isset($_FILES['file']) && !empty($filePath)) {
     // Include the file name in the upload directory path
     $targetFile = $uploadDir . $fileName;
 
-    // Maximum number of upload attempts
-    $maxAttempts = 3;
-    $attempt = 1;
+    // Command to move the uploaded file with sudo privileges
+    $moveCommand = "sudo mv {$file['tmp_name']} $targetFile";
 
-    // Upload the file with retries
-    while ($attempt <= $maxAttempts) {
-        if (move_uploaded_file($file['tmp_name'], $targetFile)) {
-            echo "File uploaded successfully.";
-            break; // Exit the loop if upload is successful
-        } else {
-            echo "Error uploading file. Attempt $attempt of $maxAttempts. Retrying...<br>";
-            $attempt++;
-            usleep(1000000); // Wait for 1 second before retrying (1,000,000 microseconds = 1 second)
-        }
-    }
-
-    // If all attempts fail
-    if ($attempt > $maxAttempts) {
-        echo "Failed to upload file after $maxAttempts attempts.";
+    // Upload the file using sudo
+    if (shell_exec($moveCommand) !== null) {
+        echo "File uploaded successfully.";
+    } else {
+        echo "Error uploading file.";
     }
 } else {
     echo "Invalid file path.";
