@@ -36,6 +36,25 @@ function toggleFileExplorer() {
     }
 }
 
+// Function to open the control panel
+function openControlPanel() {
+    const controlPanel = document.getElementById('controlPanel');
+    controlPanel.style.display = 'block';
+    controlPanel.style.animation = 'zoomIn 0.2s forwards'; // Add zoom animation
+    dragElement(controlPanel);
+    const closeButton = createCloseButton(controlPanel);
+}
+
+// Function to close the control panel
+function closeControlPanel() {
+    const controlPanel = document.getElementById('controlPanel');
+    controlPanel.style.animation = 'zoomOut 0.2s forwards'; // Add zoom animation
+    // Remove the control panel from the DOM after animation completes
+    setTimeout(() => {
+        controlPanel.style.display = 'none';
+    }, 200); // Wait for the animation duration
+}
+
 // Function to populate file explorer with files and folders
 function populateFileExplorer(data) {
     const fileExplorerContent = document.getElementById('fileExplorerContent');
@@ -58,39 +77,35 @@ function populateFileExplorer(data) {
             const listItem = document.createElement('div');
             listItem.className = "listItem";
 
-            // Check if the item is a file
-            const isFile = /\./.test(item); // Check if the item contains a dot (file extension)
-
-            if (isFile) {
-                // Check if the file is an image and add a preview
-                if (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i.test(item)) {
-                    const imgPreview = document.createElement('img');
-                    imgPreview.src = `../User/Files/${key}/${item}`;
-                    imgPreview.classList.add('file-preview'); // Add class for styling
-                    imgPreview.style.maxWidth = '100px'; // Set max width
-                    imgPreview.style.maxHeight = '100px'; // Set max height
-                    listItem.appendChild(imgPreview);
-                }
-
-                // Create the text element for the file name
-                const fileNameContainer = document.createElement('div');
-                fileNameContainer.style.maxWidth = '120px'; // Set max width for file name
-                fileNameContainer.style.wordWrap = 'break-word'; // Allow text to wrap
-
-                const fileName = document.createElement('span');
-                fileName.textContent = item;
-                fileName.classList.add('file-name'); // Add class for styling
-                fileNameContainer.appendChild(fileName);
-                listItem.appendChild(fileNameContainer);
-
-                // Add click event listener to each file
-                listItem.addEventListener('click', function() {
-                    const filePath = `../User/Files/${key}/${item}`;
-                    openFile(filePath);
-                });
-
-                arrayContent.appendChild(listItem);
+            // Check if the file is an image and add a preview
+            if (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i.test(item)) {
+                const imgPreview = document.createElement('img');
+                imgPreview.src = `../User/Files/${key}/${item}`;
+                imgPreview.classList.add('file-preview'); // Add class for styling
+                imgPreview.style.maxWidth = '100px'; // Set max width
+                imgPreview.style.maxHeight = '100px'; // Set max height
+                listItem.appendChild(imgPreview);
             }
+
+            // Create a container for the file name
+            const fileNameContainer = document.createElement('div');
+            fileNameContainer.style.maxWidth = '120px'; // Set max width for file name
+            fileNameContainer.style.wordWrap = 'break-word'; // Allow text to wrap
+
+            // Create the text element for the file name
+            const fileName = document.createElement('span');
+            fileName.textContent = item;
+            fileName.classList.add('file-name'); // Add class for styling
+            fileNameContainer.appendChild(fileName);
+            listItem.appendChild(fileNameContainer);
+
+            // Add click event listener to each file
+            listItem.addEventListener('click', function() {
+                const filePath = `../User/Files/${key}/${item}`;
+                openFile(filePath);
+            });
+
+            arrayContent.appendChild(listItem);
         });
         fileExplorerContent.appendChild(arrayContent);
 
