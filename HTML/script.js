@@ -56,13 +56,7 @@ function populateFileExplorer(data) {
         arrayContent.style.display = 'none'; // Hide by default
         value.forEach(item => {
             const listItem = document.createElement('div');
-            listItem.textContent = item;
             listItem.className = "listItem";
-            // Add click event listener to each file
-            listItem.addEventListener('click', function() {
-                const filePath = `../User/Files/${key}/${item}`;
-                openFile(filePath);
-            });
 
             // Check if the file is an image and add a preview
             if (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i.test(item)) {
@@ -73,6 +67,24 @@ function populateFileExplorer(data) {
                 imgPreview.style.maxHeight = '100px'; // Set max height
                 listItem.appendChild(imgPreview);
             }
+
+            // Create a container for the file name
+            const fileNameContainer = document.createElement('div');
+            fileNameContainer.style.maxWidth = '120px'; // Set max width for file name
+            fileNameContainer.style.wordWrap = 'break-word'; // Allow text to wrap
+
+            // Create the text element for the file name
+            const fileName = document.createElement('span');
+            fileName.textContent = item;
+            fileName.classList.add('file-name'); // Add class for styling
+            fileNameContainer.appendChild(fileName);
+            listItem.appendChild(fileNameContainer);
+
+            // Add click event listener to each file
+            listItem.addEventListener('click', function() {
+                const filePath = `../User/Files/${key}/${item}`;
+                openFile(filePath);
+            });
 
             arrayContent.appendChild(listItem);
         });
