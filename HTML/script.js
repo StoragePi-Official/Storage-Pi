@@ -74,14 +74,21 @@ function populateFileExplorer(data) {
         arrayContent.classList.add('array-content'); // Add class for styling
         arrayContent.style.display = 'none'; // Hide by default
 
-        // Calculate available width for file containers
-        const availableWidth = fileExplorerContent.offsetWidth;
-        let currentLineWidth = 0;
+        let rowContainer = null; // Initialize row container
 
         value.forEach(item => {
-            const listItem = document.createElement('div');
-            listItem.className = "listItem";
-            listItem.style.maxWidth = '120px'; // Set max width for file container
+            if (!rowContainer) {
+                // Create a new row container if it's the first item or if the previous row is full
+                rowContainer = document.createElement('div');
+                rowContainer.classList.add('row-container'); // Add class for styling
+                arrayContent.appendChild(rowContainer); // Append row container to array content
+            }
+
+            // Create the file container
+            const fileContainer = document.createElement('div');
+            fileContainer.className = "file-container"; // Add class for styling
+            fileContainer.style.maxWidth = '150px'; // Set max width for file container
+            fileContainer.style.wordWrap = 'break-word'; // Allow text to wrap
 
             // Check if the file is an image and add a preview
             if (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i.test(item)) {
@@ -90,13 +97,8 @@ function populateFileExplorer(data) {
                 imgPreview.classList.add('file-preview'); // Add class for styling
                 imgPreview.style.maxWidth = '100px'; // Set max width
                 imgPreview.style.maxHeight = '100px'; // Set max height
-                listItem.appendChild(imgPreview);
+                fileContainer.appendChild(imgPreview);
             }
-
-            // Create a container for the file name
-            const fileNameContainer = document.createElement('div');
-            fileNameContainer.style.maxWidth = '100px'; // Set max width for file name container
-            fileNameContainer.style.wordWrap = 'break-word'; // Allow text to wrap
 
             // Create the text element for the file name
             const fileName = document.createElement('span');
@@ -106,25 +108,21 @@ function populateFileExplorer(data) {
                 fileName.textContent = item;
             }
             fileName.classList.add('file-name'); // Add class for styling
-            fileNameContainer.appendChild(fileName);
-            listItem.appendChild(fileNameContainer);
+            fileContainer.appendChild(fileName);
 
             // Add click event listener to each file
-            listItem.addEventListener('click', function() {
+            fileContainer.addEventListener('click', function() {
                 const filePath = `../User/Files/${key}/${item}`;
                 openFile(filePath);
             });
 
-            arrayContent.appendChild(listItem);
+            // Append file container to row container
+            rowContainer.appendChild(fileContainer);
 
-            // Calculate the width of the current line
-            currentLineWidth += listItem.offsetWidth;
-
-            // Check if the current line exceeds the available width
-            if (currentLineWidth > availableWidth) {
-                // Start a new line
-                listItem.style.clear = 'left'; // Clear float for new line
-                currentLineWidth = listItem.offsetWidth; // Reset the current line width
+            // Check if the row is full
+            if (rowContainer.offsetWidth + fileContainer.offsetWidth >= arrayContent.offsetWidth) {
+                // If the next file will overflow the row, create a new row container
+                rowContainer = null;
             }
         });
         fileExplorerContent.appendChild(arrayContent);
@@ -169,6 +167,7 @@ function populateFileExplorer(data) {
     
     fileExplorerContent.appendChild(uploadButton);
 }
+
 
 // Function to handle file upload
 function handleUpload() {
