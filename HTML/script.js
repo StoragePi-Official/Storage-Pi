@@ -139,7 +139,7 @@ function handleUpload() {
             const directory = prompt('Enter directory name:');
             if (directory) {
                 // Perform file upload
-                uploadFile(file, directory);
+                uploadFile(file, directory, "" + directory);
             } else {
                 alert('No directory selected.');
             }
