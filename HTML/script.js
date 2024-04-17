@@ -73,11 +73,6 @@ function populateFileExplorer(data) {
         const arrayContent = document.createElement('div');
         arrayContent.classList.add('array-content'); // Add class for styling
         arrayContent.style.display = 'none'; // Hide by default
-
-        // Set grid styles for array content
-        arrayContent.style.display = 'grid';
-        arrayContent.style.gridTemplateColumns = 'repeat(auto-fill, minmax(100px, 1fr))'; // Adjust column width as needed
-
         value.forEach(item => {
             const listItem = document.createElement('div');
             listItem.className = "listItem";
