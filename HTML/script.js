@@ -53,7 +53,6 @@ function populateFileExplorer(data) {
         // Create a container for the array items
         const arrayContent = document.createElement('div');
         arrayContent.classList.add('array-content'); // Add class for styling
-        arrayContent.style.display = 'none'; // Hide by default
         value.forEach(item => {
             const listItem = document.createElement('div');
             listItem.className = "listItem";
@@ -63,8 +62,6 @@ function populateFileExplorer(data) {
                 const imgPreview = document.createElement('img');
                 imgPreview.src = `../User/Files/${key}/${item}`;
                 imgPreview.classList.add('file-preview'); // Add class for styling
-                imgPreview.style.maxWidth = '100px'; // Set max width
-                imgPreview.style.maxHeight = '100px'; // Set max height
                 listItem.appendChild(imgPreview);
             }
 
@@ -89,23 +86,6 @@ function populateFileExplorer(data) {
             arrayContent.appendChild(listItem);
         });
         fileExplorerContent.appendChild(arrayContent);
-
-        // Add a divider line between folders and files
-        const divider = document.createElement('hr');
-        fileExplorerContent.appendChild(divider);
-
-        // Add click event listener to section title
-        sectionTitle.addEventListener('click', function() {
-            // Close all other folders
-            const allArrayContents = document.querySelectorAll('.array-content');
-            allArrayContents.forEach(content => {
-                if (content !== arrayContent) {
-                    content.style.display = 'none';
-                }
-            });
-            // Toggle display of array content
-            arrayContent.style.display = arrayContent.style.display === 'none' ? 'block' : 'none';
-        });
     });
 
     // Add button for uploading files
