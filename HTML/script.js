@@ -462,6 +462,38 @@ function dragElement(elmnt) {
     }
 }
 
+        // Function to fetch the wallpaper
+        function fetchWallpaper() {
+            fetch('../getWallpaper.php')
+                .then(response => response.text())
+                .then(data => {
+                    // Check if the wallpaper path is empty
+                    if (data.trim() === '') {
+                        // If empty, request to change wallpaper and then fetch again
+                        requestChangeWallpaper();
+                    } else {
+                        // Set the fetched wallpaper as the background
+                        document.body.style.backgroundImage = `url("${data.trim()}")`;
+                    }
+                })
+                .catch(error => console.error('Error fetching wallpaper:', error));
+        }
+
+        // Function to request changing the wallpaper
+        function requestChangeWallpaper() {
+            fetch('../changeWallpaper.php')
+                .then(response => {
+                    if (response.ok) {
+                        // If changing wallpaper is successful, fetch the wallpaper again
+                        fetchWallpaper();
+                    } else {
+                        console.error('Failed to change wallpaper.');
+                    }
+                })
+                .catch(error => console.error('Error requesting change wallpaper:', error));
+        }
+
+
 // Function to update the clock every second
 setInterval(updateClock, 1000);
 
@@ -483,3 +515,6 @@ document.getElementById('controlPanelIcon').addEventListener('click', openContro
 
 // Add click event listener to the close button
 document.getElementById('closeControlPanel').addEventListener('click', closeControlPanel);
+
+// Call the fetchWallpaper function when the page loads
+window.onload = fetchWallpaper;
