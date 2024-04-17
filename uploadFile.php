@@ -2,7 +2,7 @@
 // Remove "../" from file path to prevent directory traversal
 $filePath = preg_replace('/\.\.\//', '', $_POST['filePath']);
 $fileName = basename($_FILES["file"]["name"]);
-$uploadDir = "/var/www/html/Storage-Pi/User/Files/$directory/$fileName";
+$uploadDir = "./User/Files/$directory/$fileName";
 
 // Check if file path is provided
 if (isset($_FILES['file']) && !empty($filePath)) {
@@ -10,7 +10,7 @@ if (isset($_FILES['file']) && !empty($filePath)) {
     $directory = $_POST['directory'];
 
     // Directory where the file will be uploaded
-    $uploadDir = "/var/www/html/Storage-Pi/User/Files/$directory/";
+    $uploadDir = "./User/Files/$directory/";
 
     // Create directory if it doesn't exist
     if (!file_exists($uploadDir)) {
