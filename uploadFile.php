@@ -1,18 +1,16 @@
 <?php
-// Get the current directory of the script
-$currentDir = dirname(__FILE__);
-
 // Remove "../" from file path to prevent directory traversal
 $filePath = preg_replace('/\.\.\//', '', $_POST['filePath']);
 $fileName = basename($_FILES["file"]["name"]);
-$directory = $_POST['directory'];
+$uploadDir = "/var/www/html/Storage-Pi/User/Files/$directory/$fileName";
 
 // Check if file path is provided
 if (isset($_FILES['file']) && !empty($filePath)) {
     $file = $_FILES['file'];
+    $directory = $_POST['directory'];
 
     // Directory where the file will be uploaded
-    $uploadDir = "$currentDir/User/Files/$directory/";
+    $uploadDir = "/var/www/html/Storage-Pi/User/Files/$directory/";
 
     // Create directory if it doesn't exist
     if (!file_exists($uploadDir)) {
