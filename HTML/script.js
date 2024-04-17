@@ -73,10 +73,15 @@ function populateFileExplorer(data) {
         const arrayContent = document.createElement('div');
         arrayContent.classList.add('array-content'); // Add class for styling
         arrayContent.style.display = 'none'; // Hide by default
+
+        let currentLine = 0; // Track the current line
+        let currentLineWidth = 0; // Track the width of the current line
+        let lineHeight = 0; // Track the maximum height of the current line
+
         value.forEach(item => {
             const listItem = document.createElement('div');
             listItem.className = "listItem";
-            listItem.style.maxWidth = '150px'; // Set max width for file container
+            listItem.style.maxWidth = '120px'; // Set max width for file container
 
             // Check if the file is an image and add a preview
             if (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i.test(item)) {
@@ -90,7 +95,7 @@ function populateFileExplorer(data) {
 
             // Create a container for the file name
             const fileNameContainer = document.createElement('div');
-            fileNameContainer.style.maxWidth = '120px'; // Set max width for file name container
+            fileNameContainer.style.maxWidth = '100px'; // Set max width for file name container
             fileNameContainer.style.wordWrap = 'break-word'; // Allow text to wrap
 
             // Create the text element for the file name
@@ -109,6 +114,24 @@ function populateFileExplorer(data) {
                 const filePath = `../User/Files/${key}/${item}`;
                 openFile(filePath);
             });
+
+            // Check if the current line can accommodate the new file container
+            if (currentLineWidth + listItem.offsetWidth <= fileExplorerContent.offsetWidth) {
+                listItem.style.position = 'relative';
+                listItem.style.left = currentLineWidth + 'px';
+                listItem.style.top = currentLine * lineHeight + 'px';
+                currentLineWidth += listItem.offsetWidth; // Update the width of the current line
+                lineHeight = Math.max(lineHeight, listItem.offsetHeight); // Update the maximum height of the current line
+            } else {
+                currentLine++; // Move to the next line
+                currentLineWidth = 0; // Reset the width of the current line
+                lineHeight = 0; // Reset the maximum height of the current line
+                listItem.style.position = 'relative';
+                listItem.style.left = '0px';
+                listItem.style.top = currentLine * lineHeight + 'px';
+                currentLineWidth += listItem.offsetWidth; // Update the width of the current line
+                lineHeight = Math.max(lineHeight, listItem.offsetHeight); // Update the maximum height of the current line
+            }
 
             arrayContent.appendChild(listItem);
         });
