@@ -36,25 +36,6 @@ function toggleFileExplorer() {
     }
 }
 
-// Function to open the control panel
-function openControlPanel() {
-    const controlPanel = document.getElementById('controlPanel');
-    controlPanel.style.display = 'block';
-    controlPanel.style.animation = 'zoomIn 0.2s forwards'; // Add zoom animation
-    dragElement(controlPanel);
-    const closeButton = createCloseButton(controlPanel);
-}
-
-// Function to close the control panel
-function closeControlPanel() {
-    const controlPanel = document.getElementById('controlPanel');
-    controlPanel.style.animation = 'zoomOut 0.2s forwards'; // Add zoom animation
-    // Remove the control panel from the DOM after animation completes
-    setTimeout(() => {
-        controlPanel.style.display = 'none';
-    }, 200); // Wait for the animation duration
-}
-
 // Function to populate file explorer with files and folders
 function populateFileExplorer(data) {
     const fileExplorerContent = document.getElementById('fileExplorerContent');
@@ -88,6 +69,8 @@ function populateFileExplorer(data) {
                 const imgPreview = document.createElement('img');
                 imgPreview.src = `../User/Files/${key}/${item}`;
                 imgPreview.classList.add('file-preview'); // Add class for styling
+                imgPreview.style.maxWidth = '100px'; // Set max width
+                imgPreview.style.maxHeight = '100px'; // Set max height
                 listItem.appendChild(imgPreview);
             }
 
@@ -135,6 +118,7 @@ function populateFileExplorer(data) {
     
     fileExplorerContent.appendChild(uploadButton);
 }
+
 // Function to handle file upload
 function handleUpload() {
     // Open file dialog to choose a file
