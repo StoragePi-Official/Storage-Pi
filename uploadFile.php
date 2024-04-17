@@ -1,4 +1,13 @@
 <?php
+// Set PHP settings dynamically
+ini_set('upload_max_filesize', '0');
+ini_set('post_max_size', '0');
+ini_set('max_file_uploads', '20');
+ini_set('upload_tmp_dir', '/tmp');
+ini_set('file_uploads', 'On');
+ini_set('max_execution_time', '300');
+ini_set('memory_limit', '128M');
+
 // Get the current directory of the script
 $currentDir = dirname(__FILE__);
 
