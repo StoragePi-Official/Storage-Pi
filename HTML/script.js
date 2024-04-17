@@ -473,7 +473,7 @@ function dragElement(elmnt) {
                         requestChangeWallpaper();
                     } else {
                         // Set the fetched wallpaper as the background
-                        document.body.style.backgroundImage = `url("./Resources/Wallpapers/${data.trim()}")`;
+                        document.body.style.backgroundImage = `url("../Resources/Wallpapers/${data.trim()}")`;
                     }
                 })
                 .catch(error => console.error('Error fetching wallpaper:', error));
