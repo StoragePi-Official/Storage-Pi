@@ -385,15 +385,9 @@ function openTextEditor(text, filePath) {
 
     setPopupStyles(textEditorContainer);
 
-    dragElement(textEditorContainer);
+    // dragElement(textEditorContainer);
 
     document.body.appendChild(textEditorContainer);
-
-    // Focus on the textarea when the text editor opens
-    textArea.focus();
-
-    // Make the textarea editable immediately
-    textArea.readOnly = false;
 
     // Save file when Ctrl + S is pressed
     document.addEventListener('keydown', function(event) {
