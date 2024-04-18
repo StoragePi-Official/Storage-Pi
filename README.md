@@ -1,3 +1,6 @@
+Certainly! Here's the Markdown formatted text with the code snippet and other elements added:
+
+```markdown
 # Storage Pi
 
 <p align="center">
@@ -18,20 +21,26 @@ To get started with this StoragePi, follow these steps:
 
 1. SSH Into your Raspberry Pi.
 2. Type
-   ```
+   ```bash
    sudo -i
    ```
-to grant root access.
-3. Run the command ```curl -sSL https://raw.githubusercontent.com/StoragePi-Official/Storage-Pi/main/install.sh | bash```.
+   to grant root access.
+3. Run the command 
+   ```bash
+   curl -sSL https://raw.githubusercontent.com/StoragePi-Official/Storage-Pi/main/install.sh | bash
+   ```
 4. You will need to wait until the install is completed.
 
 ## Usage
 
-Here's how you can access the dashboard :
+Here's how you can access the dashboard:
 
 1. Run the StoragePi installer.
-2. When it finished running, copy the URL it returned, it may looks like that : ```http://127.0.0.1/Storage-Pi/HTML/```.
-3. Enter this URL on a web browser, and you're connected to your StoragePi server.
+2. When it finishes running, copy the URL it returns, it may look like this: 
+   ```plaintext
+   http://127.0.0.1/Storage-Pi/HTML/
+   ```
+3. Enter this URL in a web browser, and you're connected to your StoragePi server.
 
 ## Contributions
 
@@ -58,3 +67,6 @@ We'd like to thank the following individuals/groups for their contributions to t
 - [Name 1]
 - [Name 2]
 - [Name 3]
+```
+
+Replace `[brief description of your project]`, `[your email address]`, `[License Name]`, `[Name 1]`, `[Name 2]`, `[Name 3]` with relevant information for your project. This Markdown text provides a structured guide for your project, including installation instructions, usage guidelines, and contribution details.
