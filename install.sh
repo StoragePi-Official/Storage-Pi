@@ -18,65 +18,44 @@ print_separator_line() {
 # Get the IP address of the machine
 IP=$(hostname -I | cut -d' ' -f1)
 
-# Check if Apache2 is installed
-if ! command -v apache2 &> /dev/null
-then
-    print_separator_line
-    echo -n "$(print_action_icon '+') "
-    echo "Installing Apache2..."
-    sudo apt-get update
-    sudo apt-get install -y apache2 > /dev/null 2>&1
-else
-    print_separator_line
-    echo -n "$(print_green_checkmark) "
-    echo "Apache2 is already installed."
-fi
+# Install Apache2
+print_separator_line
+echo -n "$(print_action_icon '+') "
+echo "Installing Apache2..."
+sudo apt-get update
+sudo apt-get install -y apache2 > /dev/null 2>&1
 
-# Check if PHP is installed
-if ! command -v php &> /dev/null
-then
-    print_separator_line
-    echo -n "$(print_action_icon '+') "
-    echo "Installing PHP..."
-    sudo apt-get update
-    sudo apt-get install -y php > /dev/null 2>&1
-else
-    print_separator_line
-    echo -n "$(print_green_checkmark) "
-    echo "PHP is already installed."
-fi
+# Install PHP
+print_separator_line
+echo -n "$(print_action_icon '+') "
+echo "Installing PHP..."
+sudo apt-get update
+sudo apt-get install -y php > /dev/null 2>&1
+
+# Install FFMPEG
+print_separator_line
+echo -n "$(print_action_icon '+') "
+echo "Installing FFMPEG..."
+sudo apt-get update
+sudo apt-get install -y ffmpeg > /dev/null 2>&1
 
 # Navigate to /var/www/html
 cd /var/www/html
 
-# Check if Storage-Pi directory exists, if not create it
-if [ ! -d "Storage-Pi" ]
-then
-    print_separator_line
-    echo -n "$(print_action_icon '+') "
-    echo "Creating Storage-Pi directory..."
-    mkdir Storage-Pi
-else
-    print_separator_line
-    echo -n "$(print_green_checkmark) "
-    echo "Storage-Pi directory already exists."
-fi
+# Create Storage-Pi directory
+print_separator_line
+echo -n "$(print_action_icon '+') "
+echo "Creating Storage-Pi directory..."
+mkdir -p Storage-Pi
 
 # Navigate into the Storage-Pi directory
 cd Storage-Pi
 
-# Clone the repository if it's not already cloned or replace if it exists
-if [ ! -d ".git" ] || [ -d "User/Files" ]
-then
-    print_separator_line
-    echo -n "$(print_action_icon '+') "
-    echo "Cloning or replacing Storage-Pi repository..."
-    git clone https://github.com/StoragePi-Official/Storage-Pi.git . > /dev/null 2>&1
-else
-    print_separator_line
-    echo -n "$(print_green_checkmark) "
-    echo "Storage-Pi repository is already cloned and ./User/Files exists."
-fi
+# Clone or replace Storage-Pi repository
+print_separator_line
+echo -n "$(print_action_icon '+') "
+echo "Cloning or replacing Storage-Pi repository..."
+git clone https://github.com/StoragePi-Official/Storage-Pi.git . > /dev/null 2>&1
 
 # Echo a message indicating successful installation with an emoji
 echo -e "\n\e[32m✅ StoragePi successfully installed.\e[0m"
