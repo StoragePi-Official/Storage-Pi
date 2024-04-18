@@ -392,6 +392,9 @@ function openTextEditor(text, filePath) {
     // Focus on the textarea when the text editor opens
     textArea.focus();
 
+    // Make the textarea editable immediately
+    textArea.readOnly = false;
+
     // Save file when Ctrl + S is pressed
     document.addEventListener('keydown', function(event) {
         if (event.ctrlKey && event.key === 's') {
