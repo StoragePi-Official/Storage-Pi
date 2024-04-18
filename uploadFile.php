@@ -37,10 +37,12 @@ if (isset($_FILES['file']) && !empty($filePath)) {
         if (file_exists($targetFile)) {
             echo "File uploaded successfully.";
 
-            // Execute the Python script with specified arguments
-            $pythonScript = "$currentDir/Python/uploadPopup.py";
-            $scriptArgs = "-name 'File upload' -text 'Uploading a file: $fileName'";
-            exec("python3 $pythonScript $scriptArgs");
+            // Run the Python script
+            $pythonScript = "DIR/Python/uploadPopup.py";
+            $name = "File upload";
+            $text = "Uploading a file: $fileName";
+            $command = "python3 $pythonScript -name \"$name\" -text \"$text\"";
+            shell_exec($command);
         } else {
             echo "Error: File upload failed.";
         }
