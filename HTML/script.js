@@ -91,27 +91,6 @@ function populateFileExplorer(data) {
                 imgPreview.style.maxWidth = '100px'; // Set max width
                 imgPreview.style.maxHeight = '100px'; // Set max height
                 listItem.appendChild(imgPreview);
-            } else if (/\.(mp4|webm|ogg)$/i.test(item)) {
-                // If it's a video file, fetch the thumbnail
-                fetch('../getThumbnail.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ videoPath: `../User/Files/${key}/${item}` })
-                })
-                .then(response => response.text())
-                .then(thumbnailPath => {
-                    const videoPreview = document.createElement('video');
-                    videoPreview.src = thumbnailPath;
-                    videoPreview.classList.add('file-preview');
-                    videoPreview.style.maxWidth = '100px';
-                    videoPreview.style.maxHeight = '100px';
-                    listItem.appendChild(videoPreview);
-                })
-                .catch(error => {
-                    console.error('Error fetching video thumbnail:', error);
-                });
             }
 
             // Create a container for the file name
@@ -181,6 +160,27 @@ function populateFileExplorer(data) {
     uploadButton.appendChild(uploadIcon);
     
     fileExplorerContent.appendChild(uploadButton);
+}
+
+// Function to handle file upload
+function handleUpload() {
+    // Open file dialog to choose a file
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            // Ask user to choose a directory
+            const directory = prompt('Enter directory name:');
+            if (directory) {
+                // Perform file upload
+                uploadFile(file, directory, "" + directory);
+            } else {
+                alert('No directory selected.');
+            }
+        }
+    });
+    fileInput.click();
 }
 
 // Function to handle file upload
