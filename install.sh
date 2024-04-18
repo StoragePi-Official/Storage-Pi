@@ -65,17 +65,17 @@ fi
 # Navigate into the Storage-Pi directory
 cd Storage-Pi
 
-# Clone the repository if it's not already cloned
-if [ ! -d ".git" ]
+# Clone the repository if it's not already cloned or replace if it exists
+if [ ! -d ".git" ] || [ -d "User/Files" ]
 then
     print_separator_line
     echo -n "$(print_action_icon '+') "
-    echo "Cloning Storage-Pi repository..."
+    echo "Cloning or replacing Storage-Pi repository..."
     git clone https://github.com/StoragePi-Official/Storage-Pi.git . > /dev/null 2>&1
 else
     print_separator_line
     echo -n "$(print_green_checkmark) "
-    echo "Storage-Pi repository is already cloned."
+    echo "Storage-Pi repository is already cloned and ./User/Files exists."
 fi
 
 # Echo a message indicating successful installation with an emoji
