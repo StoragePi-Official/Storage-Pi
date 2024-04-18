@@ -19,7 +19,7 @@ To get started with this StoragePi, follow these steps:
 1. SSH Into your Raspberry Pi.
 2. Type
    ```
-        sudo -i
+   sudo -i
    ```
 to grant root access.
 3. Run the command ```curl -sSL https://raw.githubusercontent.com/StoragePi-Official/Storage-Pi/main/install.sh | bash```.
