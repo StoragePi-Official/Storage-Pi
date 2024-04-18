@@ -374,6 +374,10 @@ function openTextEditor(text, filePath) {
     textArea.value = text;
     textArea.classList.add('text-area');
 
+    // Set initial height and width for the textarea
+    textArea.style.width = '100%';
+    textArea.style.height = '200px'; // You can adjust the initial height as needed
+
     textEditorContainer.appendChild(textArea);
 
     const closeButton = createCloseButton(textEditorContainer);
@@ -384,6 +388,9 @@ function openTextEditor(text, filePath) {
     dragElement(textEditorContainer);
 
     document.body.appendChild(textEditorContainer);
+
+    // Focus on the textarea when the text editor opens
+    textArea.focus();
 
     // Save file when Ctrl + S is pressed
     document.addEventListener('keydown', function(event) {
