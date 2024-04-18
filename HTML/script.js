@@ -370,15 +370,10 @@ function openTextEditor(text, filePath) {
     const textEditorContainer = document.createElement('div');
     textEditorContainer.classList.add('text-editor-container');
 
-    const textContent = document.createElement('div');
-    textContent.textContent = text;
-    textContent.classList.add('text-content');
-
     const textArea = document.createElement('textarea');
     textArea.value = text;
     textArea.classList.add('text-area');
 
-    textEditorContainer.appendChild(textContent);
     textEditorContainer.appendChild(textArea);
 
     const closeButton = createCloseButton(textEditorContainer);
@@ -389,19 +384,6 @@ function openTextEditor(text, filePath) {
     dragElement(textEditorContainer);
 
     document.body.appendChild(textEditorContainer);
-
-    // Toggle between text content and textarea for editing
-    textContent.addEventListener('click', function() {
-        textContent.style.display = 'none';
-        textArea.style.display = 'block';
-        textArea.focus();
-    });
-
-    textArea.addEventListener('blur', function() {
-        textArea.style.display = 'none';
-        textContent.style.display = 'block';
-        textContent.textContent = textArea.value;
-    });
 
     // Save file when Ctrl + S is pressed
     document.addEventListener('keydown', function(event) {
