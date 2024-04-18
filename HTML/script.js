@@ -91,22 +91,27 @@ function populateFileExplorer(data) {
                 imgPreview.style.maxWidth = '100px'; // Set max width
                 imgPreview.style.maxHeight = '100px'; // Set max height
                 listItem.appendChild(imgPreview);
-            } else if (/\.(mp4|webm|ogg)$/i.test(item)) { // Check if the file is a video
-                // Call function to fetch video thumbnail
-                fetchThumbnail(`../getThumbnail.php`, { videoPath: `../User/Files/${key}/${item}` })
-                    .then(thumbnail => {
-                        if (thumbnail) {
-                            const videoPreview = document.createElement('img');
-                            videoPreview.src = thumbnail;
-                            videoPreview.classList.add('file-preview'); // Add class for styling
-                            videoPreview.style.maxWidth = '100px'; // Set max width
-                            videoPreview.style.maxHeight = '100px'; // Set max height
-                            listItem.appendChild(videoPreview);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error fetching video thumbnail:', error);
-                    });
+            } else if (/\.(mp4|webm|ogg)$/i.test(item)) {
+                // If it's a video file, fetch the thumbnail
+                fetch('../getThumbnail.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ videoPath: `../User/Files/${key}/${item}` })
+                })
+                .then(response => response.text())
+                .then(thumbnailPath => {
+                    const videoPreview = document.createElement('video');
+                    videoPreview.src = thumbnailPath;
+                    videoPreview.classList.add('file-preview');
+                    videoPreview.style.maxWidth = '100px';
+                    videoPreview.style.maxHeight = '100px';
+                    listItem.appendChild(videoPreview);
+                })
+                .catch(error => {
+                    console.error('Error fetching video thumbnail:', error);
+                });
             }
 
             // Create a container for the file name
@@ -178,26 +183,6 @@ function populateFileExplorer(data) {
     fileExplorerContent.appendChild(uploadButton);
 }
 
-// Function to fetch video thumbnail
-async function fetchThumbnail(url, data) {
-    try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        });
-        if (response.ok) {
-            return await response.text();
-        } else {
-            throw new Error('Failed to fetch video thumbnail');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        return null;
-    }
-}
 // Function to handle file upload
 function handleUpload() {
     // Open file dialog to choose a file
