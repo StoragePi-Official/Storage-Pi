@@ -38,7 +38,7 @@ if (isset($_FILES['file']) && !empty($filePath)) {
             echo "File uploaded successfully.";
 
             // Run the Python script
-            $pythonScript = "DIR/Python/uploadPopup.py";
+            $pythonScript = "$currentDir/Python/uploadPopup.py";
             $name = "File upload";
             $text = "Uploading a file: $fileName";
             $command = "python3 $pythonScript -name \"$name\" -text \"$text\"";
