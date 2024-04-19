@@ -65,6 +65,8 @@ sudo sed -i -e 's/^upload_max_filesize\s*=\s*[0-9]\+/upload_max_filesize = 99999
 sudo sed -i -e 's/^post_max_size\s*=\s*[0-9]\+/post_max_size = 999999999M/g' "$php_ini_path"
 sudo sed -i -e 's/^max_file_uploads\s*=\s*[0-9]\+/max_file_uploads = 999999999M/g' "$php_ini_path"
 
+sudo service apache2 restart
+
 echo -e "\n\e[32m✅ PHP.ini file modified successfully to allow unlimited upload size.\e[0m"
 
 # Echo a message indicating successful installation with an emoji
