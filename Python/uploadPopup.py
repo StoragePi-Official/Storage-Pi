@@ -1,5 +1,9 @@
 import tkinter as tk
 import sys
+import os
+
+# Set the DISPLAY environment variable to the correct display
+os.environ['DISPLAY'] = ':0.0'
 
 # Parse command-line arguments
 args = sys.argv[1:]
@@ -14,10 +18,6 @@ for i in range(len(args)):
         popup_name = args[i + 1]
     elif args[i] == "-text" and i + 1 < len(args):
         popup_text = args[i + 1]
-
-# Set the DISPLAY environment variable to the correct display
-import os
-os.environ['DISPLAY'] = ':0.0'
 
 # Create a tkinter window
 window = tk.Tk()
