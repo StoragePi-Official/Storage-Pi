@@ -191,7 +191,9 @@ function fetchThumbnail(thumbnailUrl) {
             })
             .then(blob => {
                 const imageUrl = URL.createObjectURL(blob);
-                resolve(imageUrl);
+                // Replace "/var/www/html/Storage-Pi" with "../" in the thumbnail URL
+                const updatedUrl = imageUrl.replace("/var/www/html/Storage-Pi", "../");
+                resolve(updatedUrl);
             })
             .catch(error => {
                 reject(error);
