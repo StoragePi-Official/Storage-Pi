@@ -39,33 +39,6 @@ echo "Installing FFMPEG..."
 sudo apt-get update
 sudo apt-get install -y ffmpeg > /dev/null 2>&1
 
-# Find and backup PHP.ini file
-php_ini_path=$(php -i | grep "Loaded Configuration File" | cut -d ' ' -f 5)
-if [ -n "$php_ini_path" ]; then
-    php_ini_backup="${php_ini_path}.bak"
-    print_separator_line
-    echo -n "$(print_action_icon '+') "
-    echo "Backing up PHP.ini file to $php_ini_backup..."
-    sudo cp "$php_ini_path" "$php_ini_backup" > /dev/null 2>&1
-
-    # Update PHP.ini to allow unlimited max upload size and files
-    print_separator_line
-    echo -n "$(print_action_icon '+') "
-    echo "Updating PHP.ini file..."
-    sudo sed -i 's/^upload_max_filesize.*/upload_max_filesize = 0/' "$php_ini_path" > /dev/null 2>&1
-    sudo sed -i 's/^post_max_size.*/post_max_size = 0/' "$php_ini_path" > /dev/null 2>&1
-
-    # Restart Apache2
-    print_separator_line
-    echo -n "$(print_action_icon '+') "
-    echo "Restarting Apache2..."
-    sudo systemctl restart apache2
-else
-    print_separator_line
-    echo -n "$(print_action_icon '-') "
-    echo "PHP.ini file not found. Unable to update PHP configuration."
-fi
-
 # Navigate to /var/www/html
 cd /var/www/html
 
@@ -83,6 +56,16 @@ print_separator_line
 echo -n "$(print_action_icon '+') "
 echo "Cloning or replacing Storage-Pi repository..."
 git clone https://github.com/StoragePi-Official/Storage-Pi.git . > /dev/null 2>&1
+
+# Modify PHP.ini to allow unlimited max upload size and unlimited max upload files
+php_version=$(php -r 'echo PHP_MAJOR_VERSION . "." . PHP_MINOR_VERSION;')
+php_ini_path="/etc/php/${php_version}/apache2/php.ini"
+sudo cp "$php_ini_path" "${php_ini_path}.bak" # Backup PHP.ini
+sudo sed -i -e 's/^upload_max_filesize\s*=\s*[0-9]\+M/upload_max_filesize = 0/g' "$php_ini_path"
+sudo sed -i -e 's/^post_max_size\s*=\s*[0-9]\+M/post_max_size = 0/g' "$php_ini_path"
+sudo sed -i -e 's/^max_file_uploads\s*=\s*[0-9]\+/max_file_uploads = 0/g' "$php_ini_path"
+
+echo -e "\n\e[32m✅ PHP.ini file modified successfully to allow unlimited upload size.\e[0m"
 
 # Echo a message indicating successful installation with an emoji
 echo -e "\n\e[32m✅ StoragePi successfully installed.\e[0m"
