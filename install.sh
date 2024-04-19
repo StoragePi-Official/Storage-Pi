@@ -39,6 +39,33 @@ echo "Installing FFMPEG..."
 sudo apt-get update
 sudo apt-get install -y ffmpeg > /dev/null 2>&1
 
+# Find and backup PHP.ini file
+php_ini_path=$(php -i | grep "Loaded Configuration File" | cut -d ' ' -f 5)
+if [ -n "$php_ini_path" ]; then
+    php_ini_backup="${php_ini_path}.bak"
+    print_separator_line
+    echo -n "$(print_action_icon '+') "
+    echo "Backing up PHP.ini file to $php_ini_backup..."
+    sudo cp "$php_ini_path" "$php_ini_backup" > /dev/null 2>&1
+
+    # Update PHP.ini to allow unlimited max upload size and files
+    print_separator_line
+    echo -n "$(print_action_icon '+') "
+    echo "Updating PHP.ini file..."
+    sudo sed -i 's/^upload_max_filesize.*/upload_max_filesize = 0/' "$php_ini_path" > /dev/null 2>&1
+    sudo sed -i 's/^post_max_size.*/post_max_size = 0/' "$php_ini_path" > /dev/null 2>&1
+
+    # Restart Apache2
+    print_separator_line
+    echo -n "$(print_action_icon '+') "
+    echo "Restarting Apache2..."
+    sudo systemctl restart apache2
+else
+    print_separator_line
+    echo -n "$(print_action_icon '-') "
+    echo "PHP.ini file not found. Unable to update PHP configuration."
+fi
+
 # Navigate to /var/www/html
 cd /var/www/html
 

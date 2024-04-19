@@ -2,7 +2,7 @@
 // Function to generate a thumbnail image for a video file
 function generateVideoThumbnail($videoPath) {
     // Define the directory for the generated thumbnails
-    $thumbnailDir = dirname(__DIR__) . 'Storage-Pi/Resources/Thumbnails/';
+    $thumbnailDir = dirname(__DIR__) . '/Storage-Pi/Resources/Thumbnails/';
 
     // Create the directory if it doesn't exist
     if (!file_exists($thumbnailDir)) {
@@ -47,11 +47,14 @@ function generateVideoThumbnail($videoPath) {
 }
 
 // Check if a video file path is provided via GET
-if (isset($_GET['filePath'])) {
-    $videoPath = $_GET['filePath'];
+if (isset($_GET['fileName'])) {
+    $videoPath = $_GET['fileName'];
 
     // Generate the thumbnail for the video
     $thumbnail = generateVideoThumbnail($videoPath);
+
+    // Remove the "/var/www/html/Storage-Pi" part from the thumbnail path
+    $thumbnail = str_replace("/var/www/html/Storage-Pi", "../", $thumbnail);
 
     // Return the path to the thumbnail image
     if ($thumbnail) {

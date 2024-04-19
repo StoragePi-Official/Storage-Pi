@@ -82,37 +82,12 @@ function populateFileExplorer(data) {
             const listItem = document.createElement('div');
             listItem.className = "listItem";
             listItem.style.maxWidth = '150px'; // Set max width for file container
-        
-            // Check if the file is an image and add a preview
-            if (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i.test(item)) {
-                const imgPreview = document.createElement('img');
-                imgPreview.src = `../User/Files/${key}/${item}`;
-                imgPreview.classList.add('file-preview'); // Add class for styling
-                imgPreview.style.maxWidth = '100px'; // Set max width
-                imgPreview.style.maxHeight = '100px'; // Set max height
-                listItem.appendChild(imgPreview);
-            } else if (/\.(mp4|webm|ogg)$/i.test(item)) {
-                // If it's a video file, fetch the thumbnail
-                fetchThumbnail(`../getThumbnail.php?filePath=${encodeURIComponent(`../User/Files/${key}/${item}`)}`)
-                    .then(thumbnailUrl => {
-                        // Create an image element for the thumbnail
-                        const videoThumbnail = document.createElement('img');
-                        videoThumbnail.src = thumbnailUrl;
-                        videoThumbnail.classList.add('file-preview'); // Add class for styling
-                        videoThumbnail.style.maxWidth = '100px'; // Set max width
-                        videoThumbnail.style.maxHeight = '100px'; // Set max height
-                        listItem.appendChild(videoThumbnail);
-                    })
-                    .catch(error => {
-                        console.error('Error fetching video thumbnail:', error);
-                    });
-            }
-        
+
             // Create a container for the file name
             const fileNameContainer = document.createElement('div');
             fileNameContainer.style.maxWidth = '120px'; // Set max width for file name container
             fileNameContainer.style.wordWrap = 'break-word'; // Allow text to wrap
-        
+
             // Create the text element for the file name
             const fileName = document.createElement('span');
             if (item.length > 40) {
@@ -123,16 +98,39 @@ function populateFileExplorer(data) {
             fileName.classList.add('file-name'); // Add class for styling
             fileNameContainer.appendChild(fileName);
             listItem.appendChild(fileNameContainer);
-        
+
+            // Check if the file is an image and add a preview
+            if (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i.test(item)) {
+                const imgPreview = document.createElement('img');
+                imgPreview.src = `../User/Files/${key}/${item}`;
+                imgPreview.classList.add('file-preview'); // Add class for styling
+                imgPreview.style.maxWidth = '100px'; // Set max width
+                imgPreview.style.maxHeight = '100px'; // Set max height
+                listItem.insertBefore(imgPreview, fileNameContainer); // Insert before the file name
+            } else if (/\.(mp4|webm|ogg)$/i.test(item)) {
+                // If it's a video file, fetch thumbnail
+                fetchThumbnail(item, key)
+                    .then(thumbnail => {
+                        const imgPreview = document.createElement('img');
+                        imgPreview.src = thumbnail;
+                        imgPreview.classList.add('file-preview'); // Add class for styling
+                        imgPreview.style.maxWidth = '100px'; // Set max width
+                        imgPreview.style.maxHeight = '100px'; // Set max height
+                        listItem.insertBefore(imgPreview, fileNameContainer); // Insert before the file name
+                    })
+                    .catch(error => {
+                        console.error('Error fetching thumbnail:', error);
+                    });
+            }
+
             // Add click event listener to each file
             listItem.addEventListener('click', function() {
                 const filePath = `../User/Files/${key}/${item}`;
                 openFile(filePath);
             });
-        
+
             gridContainer.appendChild(listItem);
         });
-        
 
         arrayContent.appendChild(gridContainer);
         fileExplorerContent.appendChild(arrayContent);
@@ -164,42 +162,36 @@ function populateFileExplorer(data) {
     uploadButton.style.border = 'none';
     uploadButton.style.background = 'none';
     uploadButton.addEventListener('click', handleUpload);
-    
+
     // Create the image element
     const uploadIcon = document.createElement('img');
     uploadIcon.src = '../Resources/Icons/uploadFile.png';
     uploadIcon.alt = 'Upload';
     uploadIcon.style.width = '30px'; // Adjust the width of the image
     uploadIcon.style.height = '30px'; // Adjust the height of the image
-    
+
     // Append the image to the button
     uploadButton.appendChild(uploadIcon);
-    
+
     fileExplorerContent.appendChild(uploadButton);
+
+    // Add style to make the file explorer bigger
+    fileExplorerContent.style.width = '800px'; // Set width
+    fileExplorerContent.style.height = '500px'; // Set height
+    fileExplorerContent.style.overflow = 'auto'; // Enable scrolling if content exceeds dimensions
 }
 
-// Function to fetch the thumbnail for video files
-function fetchThumbnail(thumbnailUrl) {
-    return new Promise((resolve, reject) => {
-        fetch(thumbnailUrl)
-            .then(response => {
-                if (response.ok) {
-                    return response.blob();
-                } else {
-                    reject(new Error('Failed to fetch thumbnail'));
-                }
-            })
-            .then(blob => {
-                const imageUrl = URL.createObjectURL(blob);
-                // Replace "/var/www/html/Storage-Pi" with "../" in the thumbnail URL
-                const updatedUrl = imageUrl.replace("/var/www/html/Storage-Pi", "../");
-                resolve(updatedUrl);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
+// Function to fetch thumbnail for video files
+function fetchThumbnail(videoFileName, directory) {
+    return fetch(`../getThumbnail.php?fileName=${videoFileName}&directory=${directory}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch thumbnail.');
+            }
+            return response.text();
+        });
 }
+
 
 // Function to handle file upload
 function handleUpload() {
@@ -341,6 +333,30 @@ function openFile(filePath) {
 
         // Append popup container to the body
         document.body.appendChild(popupContainer);
+
+        // Fetch thumbnail for video file
+        fetch('../getThumbnail.php?videoPath=' + encodeURIComponent(filePath))
+            .then(response => {
+                if (response.ok) {
+                    return response.blob();
+                } else {
+                    throw new Error('Failed to fetch thumbnail.');
+                }
+            })
+            .then(blob => {
+                // Convert blob to URL
+                const thumbnailURL = URL.createObjectURL(blob);
+
+                // Create img element for thumbnail
+                const thumbnailImg = document.createElement('img');
+                thumbnailImg.src = thumbnailURL;
+                thumbnailImg.style.maxWidth = '100px'; // Set max width
+                thumbnailImg.style.maxHeight = '100px'; // Set max height
+
+                // Insert thumbnail before video element
+                popupContainer.insertBefore(thumbnailImg, popupVideo);
+            })
+            .catch(error => console.error('Error fetching thumbnail:', error));
     } else if (/\.(txt|text)$/i.test(filePath)) {
         // If it's a text file, open in text editor
         fetch(filePath)
