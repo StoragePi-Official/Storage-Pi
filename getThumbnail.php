@@ -18,11 +18,21 @@ function generateVideoThumbnail($videoPath) {
         return $thumbnailPath;
     }
 
+    // Remove ".." from the video path
+    $videoPath = str_replace('..', '', $videoPath);
+
     // Command to generate the thumbnail using FFMPEG
-    $ffmpegCommand = "ffmpeg -i {$videoPath} -ss 00:00:01.000 -vframes 1 {$thumbnailPath} -hide_banner";
+    $ffmpegCommand = "ffmpeg -i \"{$videoPath}\" -ss 00:00:01.000 -vframes 1 \"{$thumbnailPath}\" -hide_banner";
+
+    // Debugging: Print out the command being executed
+    echo "Executing command: $ffmpegCommand\n";
 
     // Execute the FFMPEG command
     exec($ffmpegCommand, $output, $returnCode);
+
+    // Debugging: Print out the output and return code
+    echo "Output: " . print_r($output, true) . "\n";
+    echo "Return Code: $returnCode\n";
 
     // Check if thumbnail generation was successful
     if ($returnCode === 0) {
@@ -33,8 +43,8 @@ function generateVideoThumbnail($videoPath) {
 }
 
 // Check if a video file path is provided via POST
-if (isset($_POST['videoPath'])) {
-    $videoPath = $_POST['videoPath'];
+if (isset($_GET['videoPath'])) {
+    $videoPath = $_GET['videoPath'];
 
     // Generate the thumbnail for the video
     $thumbnail = generateVideoThumbnail($videoPath);

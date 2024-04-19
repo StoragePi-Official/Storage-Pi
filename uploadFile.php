@@ -37,9 +37,12 @@ if (isset($_FILES['file']) && !empty($filePath)) {
         if (file_exists($targetFile)) {
             echo "File uploaded successfully.";
 
+            // Set the DISPLAY environment variable to the correct display
+            putenv('DISPLAY=:0.0');
+
             // Call the Python script with arguments
-            $command = "python $currentDir/Python/uploadPopup.py -name 'Uploading a file' -text '$fileName is uploading...'";
-            exec($command);
+            $command = "/usr/bin/python /var/www/html/Storage-Pi/Python/uploadPopup.py -name 'Uploading a file' -text '$fileName is uploading...'";
+            //exec($command);
         } else {
             echo "Error: File upload failed.";
         }
