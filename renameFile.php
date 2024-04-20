@@ -18,7 +18,7 @@ if(isset($_POST['oldFilePath']) && isset($_POST['newFilePath'])) {
     // Check if the old file exists
     if (file_exists($oldFilePath)) {
         // Rename the file
-        if(rename($oldFilePath, dirname($oldFilePath) . '/' . $newFileName)) {
+        if(rename($oldFilePath, $newFileName)) {
             echo json_encode(array('success' => true, 'message' => 'File renamed successfully.'));
         } else {
             echo json_encode(array('success' => false, 'message' => 'Failed to rename file.'));
