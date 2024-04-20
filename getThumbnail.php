@@ -54,7 +54,7 @@ if (isset($_GET['fileName'])) {
     $thumbnail = generateVideoThumbnail($videoPath);
 
     // Remove the "/var/www/html/Storage-Pi" part from the thumbnail path
-    $thumbnail = str_replace("/var/www/html/Storage-Pi", "../", $thumbnail);
+    $thumbnail = str_replace("/var/www/html/Storage-Pi", "./", $thumbnail);
 
     // Return the path to the thumbnail image
     if ($thumbnail) {

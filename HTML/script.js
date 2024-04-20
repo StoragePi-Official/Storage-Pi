@@ -67,7 +67,6 @@ function populateFileExplorer(data) {
         const sectionTitle = document.createElement('div');
         sectionTitle.textContent = key;
         sectionTitle.classList.add('section-title'); // Add class for styling
-        fileExplorerContent.appendChild(sectionTitle);
 
         // Create a container for the array items
         const arrayContent = document.createElement('div');
@@ -109,10 +108,10 @@ function populateFileExplorer(data) {
                 listItem.insertBefore(imgPreview, fileNameContainer); // Insert before the file name
             } else if (/\.(mp4|webm|ogg)$/i.test(item)) {
                 // If it's a video file, fetch thumbnail
-                fetchThumbnail(item, key)
+                fetchThumbnail("User/Files/" + key + "/" + item)
                     .then(thumbnail => {
                         const imgPreview = document.createElement('img');
-                        imgPreview.src = thumbnail;
+                        imgPreview.src = thumbnail.replace('./', "../");
                         imgPreview.classList.add('file-preview'); // Add class for styling
                         imgPreview.style.maxWidth = '100px'; // Set max width
                         imgPreview.style.maxHeight = '100px'; // Set max height
@@ -129,23 +128,81 @@ function populateFileExplorer(data) {
                 openFile(filePath);
             });
 
+            // Add right-click event listener for context menu (Delete option)
+            listItem.addEventListener('contextmenu', function(event) {
+                event.preventDefault(); // Prevent default context menu
+
+                // Calculate position of context menu relative to the clicked item
+                const contextMenu = document.createElement('div');
+                contextMenu.classList.add('context-menu');
+
+                // Calculate position of context menu
+                contextMenu.style.position = 'fixed';
+                contextMenu.style.top = `${event.clientY}px`; // Position menu vertically
+                contextMenu.style.left = `${event.clientX + 50}px`; // Position menu horizontally, adjust as needed
+
+                // Apply additional styles
+                contextMenu.style.backgroundColor = "rgba(255, 255, 255, 0.4)";
+                contextMenu.style.width = "100px";
+                contextMenu.style.backdropFilter = "blur(5px)";
+                contextMenu.style.borderRadius = "10px";
+                contextMenu.style.color = "rgb(255, 255, 255)";
+
+
+                // Create delete option
+                const deleteOption = document.createElement('div');
+                deleteOption.textContent = 'Delete file';
+                deleteOption.classList.add('context-menu-item');
+                deleteOption.addEventListener('click', function() {
+                    const filePath = `../User/Files/${key}/${item}`;
+                    deleteFile(filePath);
+                    contextMenu.remove(); // Remove context menu after clicking delete
+                });
+
+                // Create rename option in context menu
+                const renameOption = document.createElement('div');
+                renameOption.textContent = 'Rename file';
+                renameOption.classList.add('context-menu-item');
+                renameOption.addEventListener('click', function() {
+                    const filePath = `../User/Files/${key}/${item}`;
+                    const newFileName = prompt("Enter the new name for the file:");
+                    if (newFileName !== null && newFileName !== "") {
+                        renameFile(filePath, newFileName);
+                    }
+                    contextMenu.remove(); // Remove context menu after clicking rename
+                });
+                contextMenu.appendChild(renameOption);
+
+
+                contextMenu.appendChild(deleteOption);
+
+                // Append context menu to document body
+                document.body.appendChild(contextMenu);
+
+                // Add event listener to remove context menu when clicking outside
+                document.addEventListener('click', function() {
+                    contextMenu.remove();
+                }, { once: true }); // Remove event listener after one click
+            });
+
             gridContainer.appendChild(listItem);
         });
 
         arrayContent.appendChild(gridContainer);
+        fileExplorerContent.appendChild(sectionTitle);
         fileExplorerContent.appendChild(arrayContent);
 
         // Add a divider line between folders and files
         const divider = document.createElement('hr');
         fileExplorerContent.appendChild(divider);
 
-        // Add click event listener to section title
+        // Add click event listener to section title to toggle display of array content
         sectionTitle.addEventListener('click', function() {
             // Close all other folders
             const allArrayContents = document.querySelectorAll('.array-content');
             allArrayContents.forEach(content => {
                 if (content !== arrayContent) {
-                    content.style.display = 'none';
+                    //content.style.display = 'none';
                 }
             });
             // Toggle display of array content
@@ -161,6 +218,7 @@ function populateFileExplorer(data) {
     uploadButton.style.right = '10px'; // Adjust the right position
     uploadButton.style.border = 'none';
     uploadButton.style.background = 'none';
+    uploadButton.multiple = true;
     uploadButton.addEventListener('click', handleUpload);
 
     // Create the image element
@@ -181,9 +239,116 @@ function populateFileExplorer(data) {
     fileExplorerContent.style.overflow = 'auto'; // Enable scrolling if content exceeds dimensions
 }
 
+// Function to rename file
+function renameFile(filePath, fileName) {
+    // Create popup container for renaming
+    const popupContainer = document.createElement('div');
+    popupContainer.classList.add('rename-popup');
+
+    // Create input field for new file name
+    const inputField = document.createElement('input');
+    inputField.type = 'text';
+    inputField.placeholder = 'Enter new file name';
+    inputField.classList.add('rename-input');
+
+    // Create submit button
+    const submitButton = document.createElement('button');
+    submitButton.textContent = 'Rename';
+
+    submitButton.addEventListener('click', function() {
+        const newFileName = inputField.value.trim();
+        if (newFileName !== '') {
+            // Perform renaming operation
+            renameFileRequest(filePath, newFileName);
+            // Close the popup after renaming
+            popupContainer.remove();
+        } else {
+            alert('Please enter a new file name.');
+        }
+    });
+
+    // Append input field and submit button to the popup container
+    popupContainer.appendChild(inputField);
+    popupContainer.appendChild(submitButton);
+
+    // Set styles for the popup container
+    popupContainer.style.position = 'fixed';
+    popupContainer.style.top = '0';
+    popupContainer.style.left = '0';
+    popupContainer.style.width = '100vw'; // Full width of the viewport
+    popupContainer.style.height = '100vh'; // Full height of the viewport
+    popupContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'; // Semi-transparent background
+    popupContainer.style.backdropFilter = 'blur(10px)'; // Blur effect
+    popupContainer.style.display = 'flex';
+    popupContainer.style.flexDirection = 'column';
+    popupContainer.style.justifyContent = 'center';
+    popupContainer.style.alignItems = 'center';
+    popupContainer.style.zIndex = '9999';
+
+    // Append popup container to the body
+    document.body.appendChild(popupContainer);
+}
+
+// Function to send rename file request to server
+function renameFileRequest(filePath, newFileName) {
+    const directory = filePath.substring(0, filePath.lastIndexOf('/')); // Extract directory from file path
+    const newFilePath = `${directory}/${newFileName}`; // Combine directory with new file name
+
+    const formData = new FormData();
+    formData.append('oldFilePath', filePath);
+    formData.append('newFilePath', newFilePath);
+
+    fetch('../renameFile.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (response.ok) {
+            // File renamed successfully
+            alert('File renamed successfully.');
+            // Optionally, update file explorer after renaming
+            toggleFileExplorer();
+        } else {
+            // Error renaming file
+            alert('Error renaming file.');
+        }
+    })
+    .catch(error => {
+        console.error('Error renaming file:', error);
+        alert('Error renaming file.');
+    });
+}
+
+
+// Function to delete file
+function deleteFile(filePath) {
+    fetch('../deleteFile.php', {
+        method: 'POST',
+        body: new URLSearchParams({
+            filePath: filePath
+        })
+    })
+    .then(response => {
+        if (response.ok) {
+            // File deleted successfully
+            alert('File deleted successfully.');
+            // Optionally, update file explorer after deletion
+            toggleFileExplorer();
+        } else {
+            // Error deleting file
+            alert('Error deleting file.');
+        }
+    })
+    .catch(error => {
+        console.error('Error deleting file:', error);
+        alert('Error deleting file.');
+    });
+}
+
+
 // Function to fetch thumbnail for video files
-function fetchThumbnail(videoFileName, directory) {
-    return fetch(`../getThumbnail.php?fileName=${videoFileName}&directory=${directory}`)
+function fetchThumbnail(videoFileName) {
+    return fetch(`../getThumbnail.php?fileName=${videoFileName}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Failed to fetch thumbnail.');
@@ -192,48 +357,82 @@ function fetchThumbnail(videoFileName, directory) {
         });
 }
 
-
 // Function to handle file upload
 function handleUpload() {
-    // Open file dialog to choose a file
+    // Open file dialog to choose multiple files
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
+    fileInput.multiple = true; // Allow selecting multiple files
     fileInput.addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        if (file) {
-            // Ask user to choose a directory
-            const directory = prompt('Enter directory name:');
-            if (directory) {
-                // Perform file upload
-                uploadFile(file, directory, "" + directory);
-            } else {
-                alert('No directory selected.');
-            }
+        const files = event.target.files;
+        if (files.length > 0) {
+            // Create popup container for directory input
+            const popupContainer = document.createElement('div');
+            popupContainer.classList.add('directory-popup');
+
+            // Create directory input
+            const directoryInput = document.createElement('input');
+            directoryInput.type = 'text';
+            directoryInput.placeholder = 'Enter directory name';
+            directoryInput.classList.add('directory-input');
+            directoryInput.style.height = "30px";
+            directoryInput.style.width = "200px";
+            directoryInput.style.borderRadius = "20px";
+            directoryInput.style.backgroundColor = "rgba(255, 255, 255, 0.4)";
+            directoryInput.style.backdropFilter = "blur(10px)";
+            directoryInput.style.color = "rgb(255, 255, 255)"
+
+            // Create submit button
+            const submitButton = document.createElement('button');
+            submitButton.textContent = 'Upload';
+
+            submitButton.style.height = "30px";
+            submitButton.style.width = "100px";
+            submitButton.style.borderRadius = "20px";
+            submitButton.style.marginTop = "10px";
+
+            submitButton.addEventListener('click', function() {
+                const directory = directoryInput.value.trim();
+                if (directory !== '') {
+                    // Perform file upload for each selected file
+                    Array.from(files).forEach(file => {
+                        const filePath = `../User/Files/${directory}/${file.name}`;
+                        uploadFile(file, directory, filePath);
+                    });
+                    // Close the popup after uploading files
+                    popupContainer.remove();
+                } else {
+                    alert('Please enter a directory name.');
+                }
+            });
+
+            // Append directory input and submit button to the popup container
+            popupContainer.appendChild(directoryInput);
+            popupContainer.appendChild(submitButton);
+
+            // Set styles for the popup container
+            popupContainer.style.position = 'fixed';
+            popupContainer.style.top = '0';
+            popupContainer.style.left = '0';
+            popupContainer.style.width = '100vw'; // Full width of the viewport
+            popupContainer.style.height = '100vh'; // Full height of the viewport
+            popupContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'; // Semi-transparent background
+            popupContainer.style.backdropFilter = "blur(10px)";
+            popupContainer.style.display = 'flex';
+            popupContainer.style.flexDirection = 'column';
+            popupContainer.style.justifyContent = 'center';
+            popupContainer.style.alignItems = 'center';
+            popupContainer.style.zIndex = '9999';
+
+            // Append popup container to the body
+            document.body.appendChild(popupContainer);
+        } else {
+            alert('No files selected.');
         }
     });
     fileInput.click();
 }
 
-// Function to handle file upload
-function handleUpload() {
-    // Open file dialog to choose a file
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        if (file) {
-            // Ask user to choose a directory
-            const directory = prompt('Enter directory name:');
-            if (directory) {
-                // Perform file upload
-                uploadFile(file, directory, "" + directory);
-            } else {
-                alert('No directory selected.');
-            }
-        }
-    });
-    fileInput.click();
-}
 
 // Function to upload file to server
 function uploadFile(file, directory, filePath) {
